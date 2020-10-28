@@ -1,0 +1,42 @@
+
+#listSalle, #infoProfil{
+    width: 80%;
+    margin-left: 10%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-bottom: 2%;
+}
+
+#infoProfil{
+    margin-top:2%;
+    height: 40vh;
+}
+
+#boxSalle{
+    margin-right:2%;
+    margin-top:2%;
+    padding:1.5%;
+    border-radius: 6px;
+    width: 16%;
+    height: 30vh;
+    background-color:var(--primaryColor);
+    color:white;
+    float:left;
+    position:relative;
+    transition: box-shadow .3s;
+    cursor: pointer;
+}
+
+#boxSalle:first-child{
+    margin-left: 0;
+}
+
+#boxSalle:hover{
+    box-shadow: 0 0 11px rgba(0, 0, 0, 0.4); 
+    background-color: #255969;
+     
+}
+
+p{
+    font-size: 12px;
+}

@@ -1,0 +1,178 @@
+:root {
+  --text: white;
+  --darkBackgroundColor: rgb(43, 43, 43);
+  --colorBackgroundStart : white;
+  --lightBackgroundColor : white;
+  --redColor:#c52626;
+  --greyColor:#999;
+  --primaryColor : #2e6f83;
+}
+
+*{
+  margin: 0;
+  padding: 0;
+}
+
+@import url("https://fonts.googleapis.com/css?family=Barlow:400,500,700");
+@import "./animation.css";
+@import "./form.css";
+@import "./theme.css";
+@import "./settingSalle.css";
+
+/*
+* === BODY, APP BACKGROUND ETC. ===
+*/
+
+.colorSecondaire{
+  background-color: var(--primaryColor);
+  color:white;
+}
+
+.colorDark{
+  background-color: var(--darkBackgroundColor); 
+}
+
+.colorRed{
+  background-color: var(--redColor);
+  color:white;
+}
+
+.grey{
+  background-color: rgb(153, 153, 153);
+  color:white;
+}
+
+button.colorSecondaire:hover{
+  background-color: #255969;
+}
+
+button.grey:hover{
+  background-color: rgb(73, 73, 73);
+}
+
+.colorRed:hover{
+  background-color: #6e2828;
+  color:white;
+}
+
+h2 {
+  margin: 0;
+  font-weight: 100;
+}
+
+h3 {
+  font-size: 16px;
+  margin: 0;
+  font-weight: 100;
+}
+
+p {
+  color: var(--greyColor);
+}
+
+#messageInfo{
+  position: absolute;
+  margin-top: 5%;
+  font-size: 16px;
+  font-weight: 600;
+  color:var(--primaryColor);
+}
+
+html, body {
+  min-height: 100vh;
+  background-color: var(--lightBackgroundColor);
+  font-family: 'Barlow', sans-serif;
+  font-size: 1.125rem;
+  font-weight: 400;
+  line-height: 1.6;
+  text-rendering: optimizeLegibility;
+}
+
+/** Background **/
+#background {
+  clip-path: circle(60% at 100% 50%);
+	width: 100%;
+  height: 100%;
+
+  position:absolute;
+  top:0;
+  left: 0;
+  
+  background-image: url("../images/bg.jpg");
+  background-size: cover;
+  
+  z-index: 1;
+}
+
+/** Header **/
+header{
+  width: 100%;
+  height: 10vh;
+  display:flex; 
+  flex-direction: row; 
+  justify-content: space-between;
+  align-items: center;
+  z-index: 2;
+}
+
+header h1 {
+  margin-left: 5%;
+  font-weight: 700;
+  font-size: 1.155rem;
+
+  cursor:pointer;
+}
+
+header h1 .colorSecondaire{
+  margin-left: 2.5%;
+  padding: 2px;
+  padding-left: 5%;
+  padding-right: 5%;
+  border-radius: 6px;
+}
+
+header #rightHeader{
+  display:flex; 
+  flex-direction: row; 
+  align-items: flex-start;
+  margin-right: 5%;
+  justify-content: space-between;
+}
+
+#circle{
+  z-index: 2;
+  height: 10px;
+  width: 10px;
+  border:2px solid var(--darkBackgroundColor);
+  border-radius: 50%;
+  margin:auto;
+  cursor: pointer;
+}
+
+button{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-right: 10px;
+  padding: 6px;
+  border:none;
+  border-radius:  6px;
+  cursor: pointer;
+  z-index: 2;
+
+  line-height: 1.6;
+  font-size: 0.8rem;
+  font-weight: 400;
+  text-rendering: optimizeLegibility;
+}
+
+/** Section connexion **/
+
+#formSection{
+  min-height: 80vh;
+  display: flex; 
+  z-index: 2;
+  width: 50%;
+}
+
+
+/** Gestion Salle Parametre **/

@@ -1,0 +1,70 @@
+form{
+    width: 60%;
+    display:flex; 
+    flex-direction: column; 
+    justify-content: space-between;
+    align-items:flex-start;
+    margin: auto; 
+}
+
+form p {
+  margin: 5px 0 20px;
+  color: var(--greyColor);
+  font-weight: 100;
+  line-height: 24px;
+  font-size: 15px;
+}
+
+form input, form label, form select{
+    display:block;
+    width: 100%;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+form input, form select{
+    padding: 7px ;
+    border-radius: 6px;
+    outline: none;
+    background-color: #F0F0F0;
+}
+
+form input:focus{
+    background-color: white;
+    border: 2px solid var(--primaryColor);;
+}
+
+form #checkBoxForm{
+    width: 100%;
+    display: flex;
+    flex-direction: row; 
+    justify-content: flex-start;
+    align-items:center;
+}
+
+/* Erreur style */
+
+b{
+    color:#e20f0f;
+    font-weight: 200;
+    float: right;
+    font-size: 12px;
+}
+
+.errorMessage{
+    font-weight: 600;
+    animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
+ 
+    
+}
+
+.validInput{
+    border: 1px solid rgb(153, 153, 153);
+}
+
+.errorInput{
+    animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
+    border: 2px solid red;
+    font-size: 12px;
+}
+

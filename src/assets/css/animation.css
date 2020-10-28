@@ -1,0 +1,95 @@
+
+@-webkit-keyframes switchDarkTheme {
+    0%   { background-color: var(--colorBackgroundStart);}
+    100% { background-color: var(--darkBackgroundColor); }
+  }
+  @-moz-keyframes switchDarkTheme {
+    0%   { background-color:var(--colorBackgroundStart);}
+    100% { background-color: var(--darkBackgroundColor); }
+  }
+  @-o-keyframes switchDarkTheme {
+    0%   { background-color: var(--colorBackgroundStart);}
+    100% { background-color: var(--darkBackgroundColor); }
+  }
+  @keyframes switchDarkTheme {
+    0%   { background-color: var(--colorBackgroundStart);}
+    100% { background-color: var(--darkBackgroundColor); }
+  }
+  
+  @-webkit-keyframes switchLightTheme {
+    0%   { background-color:var(--colorBackgroundStart);}
+    100% { background-color: white; }
+  }
+  @-moz-keyframes switchLightTheme {
+    0%   { background-color: var(--colorBackgroundStart);}
+    100% { background-color: white; }
+  }
+  @-o-keyframes switchLightTheme {
+    0%   { background-color: var(--colorBackgroundStart);}
+    100% { background-color: white; }
+  }
+  @keyframes switchLightTheme {
+    0%   { background-color: var(--colorBackgroundStart);}
+    100% { background-color: white; }
+  }
+
+  @keyframes shake {
+  10%, 90% {
+    transform: translate3d(-3px, 0, 0);
+  }
+  
+  20%, 80% {
+    transform: translate3d(3px, 0, 0);
+  }
+
+  30%, 50%, 70% {
+    transform: translate3d(-5px, 0, 0);
+  }
+
+  40%, 60% {
+    transform: translate3d(5px, 0, 0);
+  }
+}
+  
+.slide-fade-enter-active {
+    transition: all 0.8s ease;
+}
+.slide-fade-leave-active {
+    transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+}
+.slide-fade-enter, .slide-fade-leave-to {
+    transform: translateX(-200px);
+    opacity: 0;
+ }
+  
+/** transition page **/
+
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+
+ 
+.fade-enter-active,
+.fade-leave-active {
+  transition: all .5s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+}
+
+/** transition list**/
+
+
+.list-item {
+  display: inline-block;
+  margin-right: 10px;
+}
+.list-enter-active, .list-leave-active {
+  transition: all 1s;
+}
+.list-enter, .list-leave-to /* .list-leave-active below version 2.1.8 */ {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.list-move {
+  transition: transform 1s;
+}
