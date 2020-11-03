@@ -1,33 +1,24 @@
 <template>
-  <div id="index">
+  <div id="Register">
     <header>
       
         <h1>VanCode</h1>
         <span id="rightHeader">
-      
-          <button v-if="authenticated"  class="colorSecondaire" @click="$router.push('account')">{{pseudo}}</button>
-          <button v-if="authenticated"  class="grey" @click="logOut()">Déconnexion</button>
-          <button v-else class="colorSecondaire" @click="$router.push('register')">Inscription</button>
-        
-                
+          <button class="colorSecondaire" @click="$router.push('/')">Accueil</button>
           <Theme/>
         </span>
 
     </header> 
     <section id="formSection">
-      <transition name="slide-fade" mode="out-in">
-        <FormRoom v-if="authenticated"/>
-        <FormCo v-else/> 
-      </transition>
+        <FormRegister /> 
     </section>
-    <div id ="background"></div>
+    <div id ="backgroundRegister"></div>
   </div>
 </template>
 
 <script>
 
-import FormRoom from './Form/FormCreateRoom.vue'
-import FormCo from './Form/Connexion.vue'
+import FormRegister from './Form/FormRegister.vue'
 import Theme from './ThemeChanger.vue'
 
 export default {
@@ -52,12 +43,12 @@ export default {
       localStorage.authenticated = "false";
        this.pseudo="";
       localStorage.pseudo = "";
-    },
+    }
   },
 
   components: {
-    FormRoom,
-    FormCo,
+
+    FormRegister,
     Theme
   },
   

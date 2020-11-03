@@ -7,10 +7,32 @@
     padding-bottom: 2%;
 }
 
-#infoProfil{
-    margin-top:2%;
-    height: 40vh;
+/** Gestion info utilisateurs **/
+
+#updateProfil{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2%;
+    width: 100%;
 }
+
+
+#updateInfo{
+    width: 40%;
+}
+
+
+#separator{
+    height: 200px;
+    width: 2px;
+    background-color: white;
+    border-radius: 12px;
+}
+
+
+/** Gestion des salles**/
+
 
 #boxSalle{
     margin-right:2%;
@@ -33,10 +55,6 @@
 
 #boxSalle:hover{
     box-shadow: 0 0 11px rgba(0, 0, 0, 0.4); 
-    background-color: #255969;
-     
+    background-color: #255969;    
 }
 
-p{
-    font-size: 12px;
-}

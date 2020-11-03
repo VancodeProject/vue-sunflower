@@ -5,13 +5,10 @@
 </template>
 
 <script>
-
 import themeChanger from './assets/js/theme.js';
-
 export default {
    name: 'app',
-
-  created() {
+   created() {
     this.themeChanger = new themeChanger();
 
     if(localStorage.themeValue!="true"){

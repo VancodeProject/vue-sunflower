@@ -3,12 +3,11 @@
   <div id="listSalle">
     <h2>
       - Anciennes salles de codes simultanées
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus eleifend diam eu interdum iaculis. Curabitur eu velit a turpis malesuada pretium. Phasellus lacus purus, aliquet iaculis velit nec, interdum aliquam mi. </p>
+      <p>Que de souvenir, voila vos anciennes salles de code simultanées ! Relancez vos anciennes salles , ou alors télécharger les pour revivre vos belles expériences avec Vancode!</p>
 
       <span id="zoneButton"  v-if="salles.length>0">
-        <button  @click="removeAll" class="colorRed">Supprimer toutes les salles</button>
-        <button class="grey" @click="filteredItems"> <i class="fa fa-filter"></i> Trier </button>
-        <!--<button class="grey" v-if="salles.length > 4" @click="simple_toggle(default_limit, salles.length)">{{ limit_by===4?'+ voir plus': '- voir moins'}}</button>-->
+       <button @click="removeAll" class="colorRed">Supprimer toutes les salles</button>
+       <button class="grey" @click="filteredItems"> <i class="fa fa-filter"></i> Trier </button>
       </span>
     
     </h2>
@@ -16,8 +15,6 @@
     <ul v-if="salles.length>0">
        <transition-group name="list" tag="p">
           <li v-for="(salle) in salles" :key="salle">
-                <!--<BoxSalle v-if="index < limit_by" :salle="salle" />-->
-
                 <BoxSalle :salle="salle" />
           </li>
         </transition-group>
@@ -35,7 +32,7 @@
 import BoxSalle from "./boxSalle.vue";
 
 export default {
-  name:"lee",
+
   data() {
     return {
       salles: [
@@ -49,17 +46,10 @@ export default {
         {name: "Un jour...", duree: "20", date:"12/12/2012", langage: "C",nbParticiapnt:"12" },
 
       ],
-
-      default_limit: 4,
-      limit_by: 4,
     };
   },
   methods: {
     filteredItems() {
-    },
-
-    simple_toggle(default_limit, filters_length) {
-      this.limit_by = this.limit_by === default_limit ? filters_length : default_limit;
     },
 
     removeAll(){
@@ -92,7 +82,7 @@ p {
 }
 
 #zoneButton{
-  display: flex; justify-content: flex-end;
+  display: flex; justify-content: flex-end; align-items: center;
   margin-bottom: 1% ;
 }
 

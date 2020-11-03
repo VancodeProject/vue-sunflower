@@ -1,7 +1,8 @@
 <template>
   <div id="boxSalle">
-    <h3>{{ salle.name }}</h3>
+    <textarea spellcheck="false" type="text" :value=" salle.name" ></textarea>
     <div id="menuBox">
+      <li ><i class="fa fa-play" aria-hidden="true"></i></li>
         <li ><i class="fa fa-download" aria-hidden="true"></i></li>
       <li @click="remove"><i class="fa fa-trash-o" aria-hidden="true"></i></li>
     </div>
@@ -62,8 +63,21 @@ export default {
     color:white;
   }
 
-  h3 {
-    width: 60%;
+  textarea {
+    -webkit-appearance:none;
+    -moz-appearance:none;
+    -ms-appearance:none;
+    -o-appearance:none;
+    appearance:none;
+    border:none;
+    background: transparent;
+    color:white;
+    resize: none;
+    width: 85%;
+    
+    font-size: 16px;
+    font-family: 'Barlow', sans-serif;
+    font-weight: 100;
     cursor:text;
   }
 

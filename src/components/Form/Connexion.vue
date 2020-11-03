@@ -11,20 +11,22 @@
        
 
         <label for="mdp">Mot de passe<b class="errorMessage" v-if="erorLogin[2]">Mauvais mot de passe ! </b></label>
-        <input v-if="erorLogin[2]||erorLogin[0]" type="password" class="errorInput" name="mdp" id="mdp" v-model="mdp">
-        <input v-else type="password" class="validInput" name="mdp" id="mdp" v-model="mdp">
-        
+        <PasswordInput v-model="mdp" v-if="erorLogin[2]||erorLogin[0]" v-on:sendDataParent="reciveDataFromChild ($event)" classInput="errorInput"/>
+        <PasswordInput v-model="mdp" v-else v-on:sendDataParent="reciveDataFromChild ($event)" classInput="validInput"/>
 
-        <span id ="checkBoxForm">
+        <!--<span id ="checkBoxForm">
             <input type="checkbox" name="checkbox" id="checkbox">
-            <label id="labelCheckBox">Se souvenir de moi !</label>
-        </span>
+          
+            <label id="labelCheckBox">rester connecté !</label>
+
+        </span>-->
         
         <button class="colorSecondaire">Créer une salle (1/2)</button>
     </form>
 </template>
 
 <script>
+import PasswordInput from './PasswordInput.vue'
 
 export default {
   data() {
@@ -36,6 +38,7 @@ export default {
   },
 
   methods: {
+
     login() {
       this.erorLogin = [];
        if(this.pseudo!= "" || this.mdp != "") {
@@ -55,6 +58,14 @@ export default {
             this.erorLogin.push(true);
         }
     },
+
+    reciveDataFromChild (recivedData) {
+      this.mdp = recivedData;
+
+      this.erorLogin[2] = null;
+      this.erorLogin[0] = null;
+    }
+
   },
   
   watch:{
@@ -63,11 +74,13 @@ export default {
        this.erorLogin[0] = null;
     },
 
-    mdp(){
-      this.erorLogin[2] = null;
-       this.erorLogin[0] = null;
-    }
+  },
+  
+  components:{
+    PasswordInput
   }
+
+  
 };
 </script>
 

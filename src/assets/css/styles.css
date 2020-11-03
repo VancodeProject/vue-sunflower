@@ -17,7 +17,7 @@
 @import "./animation.css";
 @import "./form.css";
 @import "./theme.css";
-@import "./settingSalle.css";
+@import "./setting.css";
 
 /*
 * === BODY, APP BACKGROUND ETC. ===
@@ -52,7 +52,7 @@ button.grey:hover{
 
 .colorRed:hover{
   background-color: #6e2828;
-  color:white;
+
 }
 
 h2 {
@@ -90,17 +90,34 @@ html, body {
 
 /** Background **/
 #background {
-  clip-path: circle(60% at 100% 50%);
-	width: 100%;
+  clip-path: circle(98% at 100% 50%);
+	width: 50%;
   height: 100%;
 
   position:absolute;
   top:0;
-  left: 0;
+  right: 0;
   
   background-image: url("../images/bg.jpg");
   background-size: cover;
+
+
+  z-index: 1;
+}
+
+#backgroundRegister {
+
+	width: 50%;
+  height: 100%;
+
+  position:absolute;
+  top:0;
+  right: 0;
   
+  background-image: url("../images/bg2.jpeg");
+  background-size: cover;
+
+
   z-index: 1;
 }
 
@@ -119,8 +136,6 @@ header h1 {
   margin-left: 5%;
   font-weight: 700;
   font-size: 1.155rem;
-
-  cursor:pointer;
 }
 
 header h1 .colorSecondaire{
