@@ -93,3 +93,16 @@
 .list-move {
   transition: transform 1s;
 }
+
+/** transition notification  **/
+
+.slide-notification-enter-active {
+    transition: all 0.8s ease;
+}
+.slide-notification-leave-active {
+    transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+}
+.slide-notification-enter, .slide-notification-leave-to {
+    transform: translateX(200px);
+    opacity: 0;
+ }

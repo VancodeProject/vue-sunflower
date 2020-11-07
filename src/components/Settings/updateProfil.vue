@@ -2,9 +2,12 @@
     <div id="infoProfil">  
         <h2>- Informations personnels</h2>
         <p>Votre paneau d'utilisateurs, vous permez de changer à volonter vos informations personnels ainsi que votre mot de passe ! </p>
-
+        
+        <Notification content="Mot de passe modifié!" ref="notifMdp"/>
+        <Notification content="Information de compte modifié!" ref="notifAccount"/>
+       
         <div id="updateProfil" >
-            <form method="POST">
+            <form  v-on:submit.prevent="update">
                 <label for="pseudo">Identifiant</label>  
                 <input type="text" value="Alexandre" class="validInput"  name="pseudo" id="pseudo" />
 
@@ -20,16 +23,19 @@
             <div id="separator">
 
             </div>
-            <form method="POST">
-                
-                <label for="mdp">Mot de passe actuel</label>
-                <PasswordInput v-model="mdp" v-on:sendDataParent="reciveDataFromChild ($event)" classInput="validInput"/>
+            <form v-on:submit.prevent="updateMdp"> 
+                <label>Mot de passe actuel<b class="errorMessage" v-if="erorChangeMdp[0]">Mauvais mot de passe</b></label>
+                <PasswordInput v-model="mdp" v-if="erorChangeMdp[0]" v-on:sendDataParent="reciveDataMdpFromChild ($event)" classInput="errorInput"/>
+                <PasswordInput v-model="mdp" v-else v-on:sendDataParent="reciveDataMdpFromChild ($event)" classInput="validInput"/>
 
-                 <label for="mdp">Nouveau mot de passe</label>
-                <PasswordInput v-model="mdp" v-on:sendDataParent="reciveDataFromChild ($event)" classInput="validInput"/>
+                <b class="errorMessage" v-if="erorChangeMdp[1]">Les deux mots de passe doivent être identique</b>
+                 <label>Nouveau mot de passe</label>
+                <PasswordInput v-model="newmdp" v-if="erorChangeMdp[1]" v-on:sendDataParent="reciveDataMpdNewFromChild ($event)" classInput="errorInput"/>
+                <PasswordInput v-model="newmdp" v-else v-on:sendDataParent="reciveDataMpdNewFromChild ($event)" classInput="validInput"/>
 
-                <label for="mdp">Répéter le nouveau mot de passe</label>
-                <PasswordInput v-model="mdp" v-on:sendDataParent="reciveDataFromChild ($event)" classInput="validInput"/>
+                <label>Répéter le nouveau mot de passe</label>
+                <PasswordInput v-model="newmdpRepet" v-if="erorChangeMdp[1]" v-on:sendDataParent="reciveDataMdpNewCheckFromChild ($event)" classInput="errorInput"/>
+                <PasswordInput v-model="newmdpRepet" v-else v-on:sendDataParent="reciveDataMdpNewCheckFromChild ($event)" classInput="validInput"/>
                 
                 <button class="colorSecondaire">Changer de mot de passe</button>
             </form>
@@ -40,18 +46,71 @@
 
 <script>
 import PasswordInput from '../Form/PasswordInput.vue'
+import Notification from '../utils/notification.vue'
 export default {
-      
-  components:{
-    PasswordInput
+
+  data() {
+    return {
+      mdp:'',
+      newmdp:'',
+      newmdpRepet:'',
+      erorChangeMdp: []
+    };
   },
 
-  methods:{
-    reciveDataFromChild (recivedData) {
-      this.mdp = recivedData;
+  components:{
+    PasswordInput,
+    Notification
+  },
 
-      this.erorLogin[2] = null;
-      this.erorLogin[0] = null;
+    watch:{
+        mdp(){
+            this.erorChangeMdp[0] = null;
+        },
+        newmdp(){
+            this.erorChangeMdp[1] = null;
+        },
+        newmdpRepet(){
+            this.erorChangeMdp[1] = null;
+        }
+    },
+
+    methods:{
+    reciveDataMdpFromChild (recivedData) {
+      this.mdp = recivedData.mdp;
+    },
+
+    reciveDataMpdNewFromChild(recivedData){
+       this.newmdp = recivedData.mdp;
+    },
+
+    reciveDataMdpNewCheckFromChild(recivedData){
+        this.newmdpRepet = recivedData.mdp;
+    },
+
+    updateMdp(){
+        this.erorChangeMdp=[];
+  
+        if(this.mdp!="test"){
+            this.erorChangeMdp.push(true);
+        }else{
+             this.erorChangeMdp.push(false);
+        }
+
+        if(this.newmdp!=this.newmdpRepet){
+            this.erorChangeMdp.push(true);
+           
+        }else{
+            this.erorChangeMdp.push(false);
+        }
+   
+        if(!this.erorChangeMdp[0]&&!this.erorChangeMdp[1]){
+            this.$refs.notifMdp.setShow(true);
+        }
+    },
+    
+    update(){
+        this.$refs.notifAccount.setShow(true);
     }
   }
 };
@@ -61,7 +120,7 @@ export default {
     form {
         width: 40%;
         margin:0;
-        margin-right: 1.4%;
+        margin-right: 2%;
     }
 
     button{
@@ -69,7 +128,7 @@ export default {
     }
 
     h3{
-        margin-bottom:2% ;
+        margin-bottom:1.8% ;
     }
 
 

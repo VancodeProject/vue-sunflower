@@ -15,6 +15,9 @@
 
     </header> 
     <section id="formSection">
+    
+      <Notification :content="'Bonjour '+pseudo" ref="connect"/>
+     
       <transition name="slide-fade" mode="out-in">
         <FormRoom v-if="authenticated"/>
         <FormCo v-else/> 
@@ -29,6 +32,7 @@
 import FormRoom from './Form/FormCreateRoom.vue'
 import FormCo from './Form/Connexion.vue'
 import Theme from './ThemeChanger.vue'
+import Notification from './utils/notification.vue'
 
 export default {
   name: 'Index',
@@ -45,12 +49,14 @@ export default {
       localStorage.authenticated = "true";
       this.pseudo=pseudo;
       localStorage.pseudo = pseudo;
+
+      this.$refs.connect.setShow(true);
     },
 
     logOut(){
       this.authenticated = false;
       localStorage.authenticated = "false";
-       this.pseudo="";
+      this.pseudo="";
       localStorage.pseudo = "";
     },
   },
@@ -58,7 +64,8 @@ export default {
   components: {
     FormRoom,
     FormCo,
-    Theme
+    Theme,
+    Notification
   },
   
 }

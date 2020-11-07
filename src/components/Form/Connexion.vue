@@ -1,5 +1,5 @@
 <template>
-    <form v-on:submit.prevent="login" method="POST">
+    <form v-on:submit.prevent="login" >
         <h2>Connexion</h2>
         <p>Connecte toi avant de pouvoir créer une salle de code simultané! <br></p>
 
@@ -60,7 +60,7 @@ export default {
     },
 
     reciveDataFromChild (recivedData) {
-      this.mdp = recivedData;
+      this.mdp = recivedData.mdp;
 
       this.erorLogin[2] = null;
       this.erorLogin[0] = null;

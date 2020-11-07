@@ -10,11 +10,11 @@
 
 export default {
   name: 'PasswordInput',
-  props: ["classInput"],
+  props: ["classInput","inputReturn"],
   data() {
     return {
         mdp: '',
-        passwordType: 'password'
+        passwordType: 'password',
     };
   },
   methods: {
@@ -23,8 +23,7 @@ export default {
     },
 
     sendDataParent () {
-      this.$emit("sendDataParent", this.mdp);
-      console.log(this.mdp);
+      this.$emit("sendDataParent", this);
     }
   }
 };

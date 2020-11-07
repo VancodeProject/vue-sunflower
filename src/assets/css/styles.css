@@ -1,8 +1,8 @@
 :root {
   --text: white;
   --darkBackgroundColor: rgb(43, 43, 43);
-  --colorBackgroundStart : white;
   --lightBackgroundColor : white;
+  --currentBackgroundColor:white;
   --redColor:#c52626;
   --greyColor:#999;
   --primaryColor : #2e6f83;
@@ -16,6 +16,7 @@
 @import url("https://fonts.googleapis.com/css?family=Barlow:400,500,700");
 @import "./animation.css";
 @import "./form.css";
+@import "./notification.css";
 @import "./theme.css";
 @import "./setting.css";
 

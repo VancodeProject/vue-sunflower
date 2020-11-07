@@ -1,5 +1,5 @@
 <template>
-    <form v-on:submit.prevent="register" method="POST">
+    <form v-on:submit.prevent="register">
         <h2>Inscription</h2>
         <p>Bravo! Tu es sur le point de rejoindre Vancode, à toi les salles de codes simultanées!<br></p>
 
@@ -31,6 +31,7 @@ export default {
 
   methods: {
     register() {
+      this.$router.push('/');
     },
   },
 
