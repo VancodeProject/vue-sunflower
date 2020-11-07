@@ -39,7 +39,7 @@ export default {
 
   methods: {
 
-    login() {
+    /*login() {
       this.erorLogin = [];
        if(this.pseudo!= "" || this.mdp != "") {
           this.erorLogin.push(false);
@@ -57,6 +57,15 @@ export default {
         } else {
             this.erorLogin.push(true);
         }
+    },*/
+
+    login(){
+      console.log("Connexion");
+      let pseudo = this.pseudo
+      let mdp = this.mdp
+        this.$store.dispatch('login', { pseudo, mdp })
+       .then(() => this.$router.push('/'))
+       .catch(err => console.log(err))
     },
 
     reciveDataFromChild (recivedData) {
