@@ -1,5 +1,5 @@
 
-#listSalle, #infoProfil{
+#listroom, #infoProfil{
     width: 80%;
     margin-left: 10%;
     overflow-y: auto;
@@ -31,10 +31,10 @@
 }
 
 
-/** Gestion des salles**/
+/** Gestion des rooms**/
 
 
-#boxSalle{
+#boxroom{
     margin-right:2%;
     margin-top:2%;
     padding:1.5%;
@@ -49,11 +49,11 @@
     cursor: pointer;
 }
 
-#boxSalle:first-child{
+#boxroom:first-child{
     margin-left: 0;
 }
 
-#boxSalle:hover{
+#boxroom:hover{
     box-shadow: 0 0 11px rgba(0, 0, 0, 0.4); 
     background-color: #255969;    
 }

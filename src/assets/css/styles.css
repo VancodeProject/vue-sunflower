@@ -1,10 +1,10 @@
 :root {
   --text: white;
   --darkBackgroundColor: rgb(43, 43, 43);
-  --lightBackgroundColor : white;
-  --currentBackgroundColor:white;
+  --lightBackgroundColor : #dee1e7;
+  --currentBackgroundColor:#dee1e7;
   --redColor:#c52626;
-  --greyColor:#999;
+  --greyColor:rgb(150, 150, 150);
   --primaryColor : #2e6f83;
 }
 
@@ -190,5 +190,3 @@ button{
   width: 50%;
 }
 
-
-/** Gestion Salle Parametre **/

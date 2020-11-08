@@ -3,11 +3,11 @@
         <h2>Inscription</h2>
         <p>Bravo! Tu es sur le point de rejoindre Vancode, à toi les salles de codes simultanées!<br></p>
 
-        <label for="pseudo">Identifiant</label>  
-        <input type="text" placeholder="vancode" class="validInput"  name="pseudo" id="pseudo" v-model="pseudo"/>
+        <label for="userName">Identifiant</label>  
+        <input type="text" placeholder="vancode" class="validInput"  name="userName" id="userName" v-model="userName"/>
 
-        <label for="adress">Adresse Email</label>  
-        <input type="email" placeholder="contact@email.com" class="validInput"  name="adress" id="adress" v-model="adress"/>
+        <label for="email">Adresse Email</label>  
+        <input type="email" placeholder="contact@email.com" class="validInput"  name="email" id="email" v-model="email"/>
 
         <label for="mdp">Mot de passe</label>
         <PasswordInput classInput="validInput"/>
@@ -23,16 +23,23 @@ import PasswordInput from './PasswordInput.vue'
 export default {
   data() {
     return {
-      adress:'',
-      pseudo:'',
-      mdp:'',
+      email:'',
+      userName:'',
+      password:'',
     };
   },
 
   methods: {
     register() {
-      this.$router.push('/');
-    },
+      let data = {
+          email: this.email,
+          userName: this.userName,
+          password: this.password,
+        }
+        this.$store.dispatch('register', data)
+       .then(() => this.$router.push('/'))
+       .catch(err => console.log(err))
+      },
   },
 
   components:{

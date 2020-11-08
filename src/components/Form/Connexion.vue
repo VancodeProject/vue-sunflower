@@ -5,14 +5,14 @@
 
         <b class="errorMessage" v-if="erorLogin[0]">Les champs sont vides ! </b>
 
-        <label for="pseudo">Identifiant<b class="errorMessage" v-if="erorLogin[1]">Identifiant inconnu ! </b></label>  
-        <input v-if="erorLogin[1]||erorLogin[0]" type="text" class="errorInput"  name="pseudo" id="pseudo" v-model="pseudo"/>
-        <input v-else type="text" class="validInput"  name="pseudo" id="pseudo" v-model="pseudo"/>
+        <label for="userName">Identifiant<b class="errorMessage" v-if="erorLogin[1]">Identifiant inconnu ! </b></label>  
+        <input v-if="erorLogin[1]||erorLogin[0]" type="text" class="errorInput"  name="userName" id="userName" v-model="userName"/>
+        <input v-else type="text" class="validInput"  name="userName" id="userName" v-model="userName"/>
        
 
-        <label for="mdp">Mot de passe<b class="errorMessage" v-if="erorLogin[2]">Mauvais mot de passe ! </b></label>
-        <PasswordInput v-model="mdp" v-if="erorLogin[2]||erorLogin[0]" v-on:sendDataParent="reciveDataFromChild ($event)" classInput="errorInput"/>
-        <PasswordInput v-model="mdp" v-else v-on:sendDataParent="reciveDataFromChild ($event)" classInput="validInput"/>
+        <label for="password">Mot de passe<b class="errorMessage" v-if="erorLogin[2]">Mauvais mot de passe ! </b></label>
+        <PasswordInput v-model="password" v-if="erorLogin[2]||erorLogin[0]" v-on:sendDataParent="reciveDataFromChild ($event)" classInput="errorInput"/>
+        <PasswordInput v-model="password" v-else v-on:sendDataParent="reciveDataFromChild ($event)" classInput="validInput"/>
 
         <!--<span id ="checkBoxForm">
             <input type="checkbox" name="checkbox" id="checkbox">
@@ -31,8 +31,8 @@ import PasswordInput from './PasswordInput.vue'
 export default {
   data() {
     return {
-      pseudo:'',
-      mdp:'',
+      userName:'',
+      password:'',
       erorLogin: []
     };
   },
@@ -41,13 +41,13 @@ export default {
 
     /*login() {
       this.erorLogin = [];
-       if(this.pseudo!= "" || this.mdp != "") {
+       if(this.userName!= "" || this.password != "") {
           this.erorLogin.push(false);
-          if(this.pseudo == "Admin" ||this.pseudo == "Alexandre"||this.pseudo == "Thomas") {
+          if(this.userName == "Admin" ||this.userName == "Alexandre"||this.userName == "Thomas") {
             this.erorLogin.push(false);
-            if(this.mdp == "test"){
+            if(this.password == "test"){
               this.erorLogin.push(false);
-              this.$parent.setAuthenticated(true,this.pseudo);
+              this.$parent.setAuthenticated(true,this.userName);
             }else{
               this.erorLogin.push(true);
             }
@@ -60,17 +60,15 @@ export default {
     },*/
 
     login(){
-      console.log("Connexion");
-      let pseudo = this.pseudo
-      let mdp = this.mdp
-        this.$store.dispatch('login', { pseudo, mdp })
-       .then(() => this.$router.push('/'))
-       .catch(err => console.log(err))
+      let userName = this.userName
+      let password = this.password
+      this.$store.dispatch('login', { userName, password }).then(
+        this.$parent.setAuthenticated()
+      ).catch(err => console.log(err))
     },
 
     reciveDataFromChild (recivedData) {
-      this.mdp = recivedData.mdp;
-
+      this.password = recivedData.password;
       this.erorLogin[2] = null;
       this.erorLogin[0] = null;
     }
@@ -78,7 +76,7 @@ export default {
   },
   
   watch:{
-    pseudo() {
+    userName() {
        this.erorLogin[1] = null;
        this.erorLogin[0] = null;
     },

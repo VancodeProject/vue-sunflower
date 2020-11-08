@@ -1,21 +1,21 @@
 <template>
 <div>
-  <div id="listSalle">
+  <div id="listroom">
     <h2>
       - Anciennes salles de codes simultanées
       <p>Que de souvenir, voila vos anciennes salles de code simultanées ! Relancez vos anciennes salles , ou alors télécharger les pour revivre vos belles expériences avec Vancode!</p>
 
-      <span id="zoneButton"  v-if="salles.length>0">
+      <span id="zoneButton"  v-if="room.length>0">
        <button @click="removeAll" class="colorRed">Supprimer toutes les salles</button>
        <button class="grey" @click="filteredItems"> <i class="fa fa-filter"></i> Trier </button>
       </span>
     
     </h2>
 
-    <ul v-if="salles.length>0">
+    <ul v-if="room.length>0">
        <transition-group name="list" tag="p">
-          <li v-for="(salle) in salles" :key="salle.id">
-                <BoxSalle :salle="salle" />
+          <li v-for="(room) in room" :key="room.id">
+                <BoxSalle :room="room" />
           </li>
         </transition-group>
         
@@ -35,7 +35,7 @@ export default {
 
   data() {
     return {
-      salles: [
+      room: [
         {id:"1",name: "Programmation en C", duree: "110", date:"12/12/2012", langage: "C" , nbParticiapnt:"12"},
         {id:"2",name: "Cours L3 info", duree: "120",  date:"12/12/2012", langage: "Python",nbParticiapnt:"12" },
         {id:"3",name: "Bientot reconfiné", duree: "140",  date:"12/12/2012", langage: "C++",nbParticiapnt:"12" },
@@ -54,13 +54,13 @@ export default {
 
     removeAll(){
 
-      this.salles=[];
+      this.room=[];
     },
 
     remove (object) {
 
-      let index = this.salles.indexOf(object)
-      this.salles.splice(index, 1)
+      let index = this.room.indexOf(object)
+      this.room.splice(index, 1)
     },
   },
 

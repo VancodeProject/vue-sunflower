@@ -1,6 +1,6 @@
 <template>
     <div id="passwordShowHidden">
-        <input :class=classInput :type="passwordType" v-model="mdp"  @input="sendDataParent ()">
+        <input :class=classInput :type="passwordType" v-model="password"  @input="sendDataParent ()">
         <button type="button" :class=classInput class="grey" v-if="passwordType=='password'" @click="switchVisibility"><i class="fa fa-eye"></i></button>
         <button type="button" :class=classInput class="grey" v-else  @click="switchVisibility"><i class="fa fa-eye-slash " ></i></button>
     </div>
@@ -13,7 +13,7 @@ export default {
   props: ["classInput","inputReturn"],
   data() {
     return {
-        mdp: '',
+        password: '',
         passwordType: 'password',
     };
   },

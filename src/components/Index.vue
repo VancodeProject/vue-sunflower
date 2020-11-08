@@ -4,17 +4,15 @@
         <h1>VanCode</h1>
         <span id="rightHeader">
       
-          <button v-if="isLoggedIn"  class="colorSecondaire" @click="$router.push('account')">test</button>
+          <button v-if="isLoggedIn"  class="colorSecondaire" @click="$router.push('account')">Alexandre</button>
           <button v-if="isLoggedIn"  class="grey" @click="logout">Déconnexion</button>
           <button v-else class="colorSecondaire" @click="$router.push('register')">Inscription</button>
         
           <Theme/>
         </span>
     </header> 
-    <section id="formSection">
-    
-      <Notification content='Bonjour ' ref="connect"/>
-     
+    <section id="formSection">   
+      <Notification content='Bonjour Alexandre' ref="connect"/>
       <transition name="slide-fade" mode="out-in">
         <FormRoom v-if="isLoggedIn"/>
         <FormCo v-else/> 
@@ -44,13 +42,11 @@ export default {
     },
 
     logout: function () {
-        this.$store.dispatch('logout')
-        .then(() => {
-          this.$router.push('/login')
-        })
-    }
-  },
+      this.$store.dispatch('logout');
+    },
 
+  },
+  
   components: {
     FormRoom,
     FormCo,

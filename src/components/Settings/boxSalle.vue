@@ -1,6 +1,6 @@
 <template>
-  <div id="boxSalle">
-    <textarea spellcheck="false" type="text" :value=" salle.name" ></textarea>
+  <div id="boxroom">
+    <textarea spellcheck="false" type="text" :value=" room.name" ></textarea>
     <div id="menuBox">
       <li ><i class="fa fa-play" aria-hidden="true"></i></li>
         <li ><i class="fa fa-download" aria-hidden="true"></i></li>
@@ -8,23 +8,23 @@
     </div>
 
     <div id="bottomBox">
-      <p>Nombre participant : {{ salle.nbParticiapnt }}</p>
-      <p>Datte : {{ salle.date }} </p>
-      <p>Durée : {{ salle.duree }} min</p>
-      <p>Langage : {{ salle.langage }}</p>
+      <p>Nombre participant : {{ room.nbParticiapnt }}</p>
+      <p>Datte : {{ room.date }} </p>
+      <p>Durée : {{ room.duree }} min</p>
+      <p>Langage : {{ room.langage }}</p>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  props: ["salle"],
+  props: ["room"],
   data() {
     return{}
   },
   methods:{
     remove(){
-      this.$parent.$parent.remove(this.salle);
+      this.$parent.$parent.remove(this.room);
     }
   }
 };
@@ -38,7 +38,7 @@ export default {
     right: 10px;
   }
 
-  #boxSalle:hover li{
+  #boxroom:hover li{
     display:block;
   }
 
@@ -61,6 +61,7 @@ export default {
 
   p{
     color:white;
+    font-size: 12px;
   }
 
   textarea {
