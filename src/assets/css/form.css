@@ -15,15 +15,15 @@ form p {
   font-size: 15px;
 }
 
-form input, form label, form select{
+form input, form label{
     display:block;
-    width: 100%;
+    width: 95%;
     font-size: 14px;
     font-weight: 500;
 }
 
-form input, form select{
-    padding: 1.8% ;
+form input{
+    padding: 2% ;
     border-radius: 6px;
     outline: none;
     background-color: #F0F0F0;
@@ -41,6 +41,8 @@ form #checkBoxForm{
     justify-content: flex-start;
     align-items:center;
 }
+
+
 
 /* Erreur style */
 

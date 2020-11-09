@@ -7,7 +7,7 @@
     animation:         switchDarkTheme 2s;*/
     background-color: var(--darkBackgroundColor);
   }
-  
+
   .light{
     color:black;
    /* -webkit-animation: switchLightTheme 1s; 
@@ -16,5 +16,6 @@
     animation:         switchLightTheme 2s; */
     background-color: var(white);
   }
+
   
   

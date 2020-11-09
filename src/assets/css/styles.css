@@ -19,6 +19,7 @@
 @import "./notification.css";
 @import "./theme.css";
 @import "./setting.css";
+@import "./salle.css";
 
 /*
 * === BODY, APP BACKGROUND ETC. ===
@@ -69,6 +70,19 @@ h3 {
 
 p {
   color: var(--greyColor);
+}
+
+textarea{
+  -webkit-appearance:none;
+  -moz-appearance:none;
+  -ms-appearance:none;
+  -o-appearance:none;
+  appearance:none;
+  border:none;
+  background: transparent;
+  cursor:text;
+  resize: none;
+  width: 100%;
 }
 
 #messageInfo{
@@ -190,3 +204,10 @@ button{
   width: 50%;
 }
 
+
+/** Salle **/
+
+#room{
+  width: 80%;
+  margin-left:10%;
+}

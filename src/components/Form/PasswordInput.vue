@@ -32,7 +32,7 @@ export default {
 <style scoped>
 
     #passwordShowHidden{
-        width: 104.1%;    
+        width: 100%;    
         display: flex;
     }
 

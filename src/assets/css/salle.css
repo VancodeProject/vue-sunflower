@@ -1,0 +1,43 @@
+#codeZone{
+    width: 78%;
+    min-height: 80vh;
+    float:left;
+    border-radius: 6px;
+    border:1px solid var(--greyColor);
+
+}
+#codeZone textarea{
+    width: 98%;
+    min-height: 80vh;
+    padding: 1%;
+}
+
+#listUsers ul li{
+    width: 15%;
+    padding: 1%;
+    list-style: none;
+    float:right;
+}
+
+#listUsers ul li:not(:first-child){
+    border-top:1px solid var(--greyColor);
+}
+
+#listUsers:hover{
+    cursor: pointer;
+}
+
+#userItem{
+    width: 100%;
+    display:flex;
+    align-items: center;
+}
+
+#userItem:hover{
+    color:white;
+}
+
+#userItem h4{
+    width: 90%;
+    font-size: 15px;
+}

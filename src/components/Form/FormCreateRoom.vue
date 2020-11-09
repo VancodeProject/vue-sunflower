@@ -7,34 +7,40 @@
         </p>
 
         <label for="nameRoom"><b class="errorMessage" v-if="errorForm">L'intitulé doit avoir entre 1 et 32 caractères</b>Intitulé</label>
-        <input v-if="errorForm" type="text" class="errorInput" name="nameRoom" id="nameRoom" v-model="nameRoom" :placeholder="'Programmation en '+selected"/>
-        <input v-else type="text" class="validInput" name="nameRoom" id="nameRoom" v-model="nameRoom" :placeholder="'Programmation en '+selected"/>
+        <input v-if="errorForm" type="text" class="errorInput" name="nameRoom" id="nameRoom" v-model="nameRoom" :placeholder="'Programmation en '+selected.value"/>
+        <input v-else type="text" class="validInput" name="nameRoom" id="nameRoom" v-model="nameRoom" :placeholder="'Programmation en '+selected.value"/>
        
         <label for="chooseLangage">Langage</label>
-        <select name="chooseLangage" class="validInput" v-model="selected">
-            <option v-for="langage in languages" v-bind:key="langage.value">
-              {{ langage.value }}
-            </option>
-        </select>
         
+        <!--<select name="chooseLangage" class="validInput" v-model="selected">
+          <option v-for="langage in languages" v-bind:key="langage.value">
+            {{ langage.value }}
+          </option>
+        </select>-->
 
+        <CustomSelect
+          :options="languages"
+          :default="selected"
+          v-on:selectchange="changeInput($event)"
+        />
+     
         <button class="colorSecondaire">Créer une salle (2/2)</button>
       
     </form>
 </template>
 
 <script>
-
+import CustomSelect from './SelectInput.vue'
 export default {
   data() {
     return {
         nameRoom: "",
-        selected: 'C',
+        selected: { id:1,value: 'C' },
         languages: [
-          { value: 'C' },
-          { value: 'C++' },
-          { value: 'Python' },
-          { value: 'Java' }
+          { id:1,value: 'C' },
+          { id:2,value: 'C++' },
+          { id:3,value: 'Python' },
+          { id:4,value: 'Java' }
         ],
         errorForm:false,
     };
@@ -47,6 +53,10 @@ export default {
       }else{
         this.$router.push('salle');
       }
+    },
+
+    changeInput(selected){
+      this.selected = selected;
     }
   },
 
@@ -54,6 +64,10 @@ export default {
     nameRoom() {
        this.errorForm=false;
     },
+  },
+
+  components: {
+    CustomSelect,
   },
 
   

@@ -60,11 +60,16 @@ export default {
     },*/
 
     login(){
+      this.erorLogin = []; // gestion erreurs champs!
+
       let userName = this.userName
       let password = this.password
-      this.$store.dispatch('login', { userName, password }).then(
-        this.$parent.setAuthenticated()
-      ).catch(err => console.log(err))
+      this.$store.dispatch('login', { userName, password }).then(() => {
+        this.$parent.setAuthenticated();
+      }).catch(err => {
+        this.erorLogin.push(true);
+        console.log(err.data)
+      })
     },
 
     reciveDataFromChild (recivedData) {
@@ -86,8 +91,6 @@ export default {
   components:{
     PasswordInput
   }
-
-  
 };
 </script>
 

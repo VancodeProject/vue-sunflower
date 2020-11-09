@@ -65,21 +65,12 @@ export default {
   }
 
   textarea {
-    -webkit-appearance:none;
-    -moz-appearance:none;
-    -ms-appearance:none;
-    -o-appearance:none;
-    appearance:none;
-    border:none;
-    background: transparent;
     color:white;
-    resize: none;
     width: 85%;
-    
     font-size: 16px;
     font-family: 'Barlow', sans-serif;
     font-weight: 100;
-    cursor:text;
+    
   }
 
 </style>
