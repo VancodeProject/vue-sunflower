@@ -3,39 +3,41 @@
         <h2>- Informations personnels</h2>
         <p>Votre paneau d'utilisateurs, vous permez de changer à volonter vos informations personnels ainsi que votre mot de passe ! </p>
         
-        <Notification content="Mot de passe modifié!" ref="notifMdp"/>
+        <Notification content="Mot de passe modifié!" ref="notifpassword"/>
         <Notification content="Information de compte modifié!" ref="notifAccount"/>
        
         <div id="updateProfil" >
             <form  v-on:submit.prevent="update">
-                <label for="pseudo">Identifiant</label>  
-                <input type="text" value="Alexandre" class="validInput"  name="pseudo" id="pseudo" />
+                <label for="pseudo">Identifiant</label><b class="errorMessage" v-if="erorUserForm[0]">{{msgErrorUserForm[0]}}</b>  
+                <input type="text" v-if="erorUserForm[0]" v-model="user.username" class="errorInput"  name="pseudo" id="pseudo"  />
+                <input type="text" v-else v-model="user.username" class="validInput"  name="pseudo" id="pseudo"  />
 
-                <label for="adress">Adresse Email</label>  
-                <input type="email" value="contact@email.com" class="validInput"  name="adress" id="adress"/>
+                <label for="adress">Adresse Email</label><b class="errorMessage" v-if="erorUserForm[1]">{{msgErrorUserForm[1]}}</b> 
+                <input type="email" v-if="erorUserForm[1]" v-model="user.email" class="validInput"  name="adress" id="adress" />
+                 <input type="email" v-else  v-model="user.email" class="validInput"  name="adress" id="adress" />
 
                 <span id="zoneButton" >
                     <button class="colorSecondaire">Valider les changements</button>
-                    <button class="grey">Annuler</button>
+                    <button type="button" v-on:click="resetUser" class="grey">Annuler</button>
                 </span>     
             </form>
 
             <div id="separator">
 
             </div>
-            <form v-on:submit.prevent="updateMdp"> 
-                <label>Mot de passe actuel<b class="errorMessage" v-if="erorChangeMdp[0]">Mauvais mot de passe</b></label>
-                <PasswordInput v-model="mdp" v-if="erorChangeMdp[0]" v-on:sendDataParent="reciveDataMdpFromChild ($event)" classInput="errorInput"/>
-                <PasswordInput v-model="mdp" v-else v-on:sendDataParent="reciveDataMdpFromChild ($event)" classInput="validInput"/>
+            <form v-on:submit.prevent="updatepassword"> 
+                <label>Mot de passe actuel<b class="errorMessage" v-if="erorChangepassword[0]">{{msgErrorPassword[0]}}</b></label>
+                <PasswordInput v-model="password" v-if="erorChangepassword[0]" v-on:sendDataParent="reciveDatapasswordFromChild ($event)" classInput="errorInput"/>
+                <PasswordInput v-model="password" v-else v-on:sendDataParent="reciveDatapasswordFromChild ($event)" classInput="validInput"/>
 
-                <b class="errorMessage" v-if="erorChangeMdp[1]">Les deux mots de passe doivent être identique</b>
+                <b class="errorMessage" v-if="erorChangepassword[1]">{{msgErrorPassword[1]}}</b>
                  <label>Nouveau mot de passe</label>
-                <PasswordInput v-model="newmdp" v-if="erorChangeMdp[1]" v-on:sendDataParent="reciveDataMpdNewFromChild ($event)" classInput="errorInput"/>
-                <PasswordInput v-model="newmdp" v-else v-on:sendDataParent="reciveDataMpdNewFromChild ($event)" classInput="validInput"/>
+                <PasswordInput v-model="newpassword" v-if="erorChangepassword[1]" v-on:sendDataParent="reciveDataMpdNewFromChild ($event)" classInput="errorInput"/>
+                <PasswordInput v-model="newpassword" v-else v-on:sendDataParent="reciveDataMpdNewFromChild ($event)" classInput="validInput"/>
 
                 <label>Répéter le nouveau mot de passe</label>
-                <PasswordInput v-model="newmdpRepet" v-if="erorChangeMdp[1]" v-on:sendDataParent="reciveDataMdpNewCheckFromChild ($event)" classInput="errorInput"/>
-                <PasswordInput v-model="newmdpRepet" v-else v-on:sendDataParent="reciveDataMdpNewCheckFromChild ($event)" classInput="validInput"/>
+                <PasswordInput v-model="newpasswordRepeat" v-if="erorChangepassword[1]" v-on:sendDataParent="reciveDatapasswordNewCheckFromChild ($event)" classInput="errorInput"/>
+                <PasswordInput v-model="newpasswordRepeat" v-else v-on:sendDataParent="reciveDatapasswordNewCheckFromChild ($event)" classInput="validInput"/>
                 
                 <button class="colorSecondaire">Changer de mot de passe</button>
             </form>
@@ -47,16 +49,30 @@
 <script>
 import PasswordInput from '../Form/PasswordInput.vue'
 import Notification from '../utils/notification.vue'
+import {getInfoUser} from '../../assets/utils/backend.js'
+//import {updateInfoUser} from '../../assets/utils/backend.js'
+import {checkUserName} from '../../assets/utils/checkInput.js'
+import {checkEmail} from '../../assets/utils/checkInput.js'
+import {checkPassword} from '../../assets/utils/checkInput.js'
+
 export default {
 
   data() {
     return {
-      mdp:'',
-      newmdp:'',
-      newmdpRepet:'',
-      erorChangeMdp: []
+      user:'',
+      password:'',
+      newpassword:'',
+      newpasswordRepeat:'',
+      erorChangepassword: [],
+      msgErrorPassword:[],
+      erorUserForm: [],
+      msgErrorUserForm:[]
     };
   },
+
+    async created(){
+     this.user = await getInfoUser(this.$store.getters.isLoggedIn);   
+    },
 
   components:{
     PasswordInput,
@@ -64,54 +80,101 @@ export default {
   },
 
     watch:{
-        mdp(){
-            this.erorChangeMdp[0] = null;
+        password(){
+            this.erorChangepassword[0] = null;
         },
-        newmdp(){
-            this.erorChangeMdp[1] = null;
+        newpassword(){
+            this.erorChangepassword[1] = null;
         },
-        newmdpRepet(){
-            this.erorChangeMdp[1] = null;
+        newpasswordRepeat(){
+            this.erorChangepassword[1] = null;
+        },
+
+        'user.username':function(){
+            this.erorUserForm[0]=null; 
+        },
+
+        'user.email':function(){
+            this.erorUserForm[1]=null; 
         }
     },
 
     methods:{
-    reciveDataMdpFromChild (recivedData) {
-      this.mdp = recivedData.mdp;
+    reciveDatapasswordFromChild (recivedData) {
+      this.password = recivedData.password;
     },
 
     reciveDataMpdNewFromChild(recivedData){
-       this.newmdp = recivedData.mdp;
+       this.newpassword = recivedData.password;
     },
 
-    reciveDataMdpNewCheckFromChild(recivedData){
-        this.newmdpRepet = recivedData.mdp;
+    reciveDatapasswordNewCheckFromChild(recivedData){
+        this.newpasswordRepeat = recivedData.password;
     },
 
-    updateMdp(){
-        this.erorChangeMdp=[];
-  
-        if(this.mdp!="test"){
-            this.erorChangeMdp.push(true);
+    async updatepassword(){
+        this.erorChangepassword=[];
+        this.msgErrorPassword=[];
+        this.msgErrorPassword.push("Mauvais mot de passe");
+        this.msgErrorPassword.push("Les deux mots de passe doivent être identique");
+
+        if(this.password!="test"){
+            this.erorChangepassword.push(true);
         }else{
-             this.erorChangeMdp.push(false);
+             this.erorChangepassword.push(false);
         }
-
-        if(this.newmdp!=this.newmdpRepet){
-            this.erorChangeMdp.push(true);
-           
+        
+        if(this.newpassword!=this.newpasswordRepeat){
+            this.erorChangepassword.push(true); 
         }else{
-            this.erorChangeMdp.push(false);
+            if(checkPassword(this.newpassword)){
+                this.msgErrorPassword.splice(1,1,"Minimum 6 caractères")
+                this.erorChangepassword.push(true);
+            }else{
+                this.erorChangepassword.push(false);
+            }            
         }
    
-        if(!this.erorChangeMdp[0]&&!this.erorChangeMdp[1]){
-            this.$refs.notifMdp.setShow(true);
+        if(!this.erorChangepassword[0]&&!this.erorChangepassword[1]){
+            this.$refs.notifpassword.setShow(true);
         }
     },
-    
-    update(){
-        this.$refs.notifAccount.setShow(true);
+    async resetUser(){
+         this.user = await getInfoUser(this.$store.getters.isLoggedIn);  
+         this.erorUserForm=[]; 
+    },
+
+    async update(){
+        this.erorUserForm=[];
+        this.msgErrorUserForm=[];
+
+        this.msgErrorUserForm.push("Au moins 3 caractères");
+        this.msgErrorUserForm.push("Email invalide");
+
+        this.erorUserForm.push(checkUserName(this.user.username));
+        this.erorUserForm.push(checkEmail(this.user.email));
+
+        if(!this.erorUserForm[0]&&!this.erorUserForm[1]){
+            
+            this.$refs.notifAccount.setShow(true);
+            //let rep = await updateInfoUser(this.user);
+
+            /*if(rep.resp.response.data.code==5){
+                this.erorLogin.splice(1,1,true);
+                this.msgErrorUserForm.splice(1,1,"L'email est deja utilisé");
+            }
+
+            if(rep.resp.response.data.code==6){
+                this.erorLogin.splice(0,1,true);
+                this.msgErrorUserForm.splice(0,1,"L'identifiant est deja utilisé");
+            }*/
+
+            //alert(rep);
+        }
+      
     }
+
+    
   }
 };
 </script>

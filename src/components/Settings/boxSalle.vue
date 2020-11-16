@@ -1,5 +1,5 @@
 <template>
-  <div id="boxroom">
+  <span id="boxroom">
     <textarea spellcheck="false" type="text" :value=" room.name" ></textarea>
     <div id="menuBox">
       <li ><i class="fa fa-play" aria-hidden="true"></i></li>
@@ -13,7 +13,7 @@
       <p>Durée : {{ room.duree }} min</p>
       <p>Langage : {{ room.langage }}</p>
     </div>
-  </div>
+  </span>
 </template>
 
 <script>

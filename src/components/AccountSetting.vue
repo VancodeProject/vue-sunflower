@@ -9,6 +9,11 @@
     </header> 
     <UpdateProfil />
     <Salles />
+
+    <div id="deleteAccount">
+      <b  >Suprimer votre compte</b>
+    </div>
+
   </div>
 </template>
 
@@ -36,8 +41,15 @@ export default {
 
 <style scoped>
 
-  p {
-    font-size:15px;
+  #deleteAccount{
+    height:60px;
+  }
+
+  b {
+    padding: 10px;
+    float:none;
+    margin-left:10%;
+    cursor: pointer;
   } 
 
 </style>

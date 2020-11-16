@@ -7,7 +7,14 @@
 
       <span id="zoneButton"  v-if="room.length>0">
        <button @click="removeAll" class="colorRed">Supprimer toutes les salles</button>
-       <button class="grey" @click="filteredItems"> <i class="fa fa-filter"></i> Trier </button>
+
+        <DropDownButton
+          :options="optionTrie"
+          :changeName="true"
+          v-on:dropdownchange="dropdownchange($event)"
+        />
+  
+        <!--<button class="grey" @click="filteredItems"> <i class="fa fa-filter"></i> Trier </button>-->
       </span>
     
     </h2>
@@ -30,22 +37,25 @@
 
 <script>
 import BoxSalle from "./boxSalle.vue";
-
+import DropDownButton from "../utils/dropDown.vue";
 export default {
 
   data() {
     return {
       room: [
-        {id:"1",name: "Programmation en C", duree: "110", date:"12/12/2012", langage: "C" , nbParticiapnt:"12"},
-        {id:"2",name: "Cours L3 info", duree: "120",  date:"12/12/2012", langage: "Python",nbParticiapnt:"12" },
-        {id:"3",name: "Bientot reconfiné", duree: "140",  date:"12/12/2012", langage: "C++",nbParticiapnt:"12" },
-        {id:"4",name: "Le meilleur patissier", duree: "60",  date:"12/12/2012", langage: "Java",nbParticiapnt:"12" },
-        {id:"5",name: "Programmation en Python", duree: "110",  date:"12/12/2012",langage: "Python",nbParticiapnt:"12" },
-        {id:"6",name: "Cours Java", duree: "120", date:"12/12/2012", langage: "Java",nbParticiapnt:"12" },
-        {id:"7",name: "Cours C++", duree: "130", date:"12/12/2012", langage: "C++",nbParticiapnt:"12" },
+        {id:"1",name: "Programmation en C", duree: "110", date:"23/12/2012", langage: "C" , nbParticiapnt:"12"},
+        {id:"2",name: "Cours L3 info", duree: "120",  date:"6/01/2012", langage: "Python",nbParticiapnt:"12" },
+        {id:"3",name: "Bientot reconfiné", duree: "140",  date:"9/12/2012", langage: "C++",nbParticiapnt:"12" },
+        {id:"4",name: "Le meilleur patissier", duree: "60",  date:"14/12/2012", langage: "Java",nbParticiapnt:"12" },
+        {id:"5",name: "Programmation en Python", duree: "110",  date:"02/12/2012",langage: "Python",nbParticiapnt:"12" },
+        {id:"6",name: "Cours Java", duree: "120", date:"30/12/2012", langage: "Java",nbParticiapnt:"12" },
+        {id:"7",name: "Cours C++", duree: "130", date:"9/11/2012", langage: "C++",nbParticiapnt:"12" },
         {id:"8",name: "Un jour...", duree: "20", date:"12/12/2012", langage: "C",nbParticiapnt:"12" },
-
       ],
+      optionTrie:[
+        "Date","Langage","Durée"
+      ],
+      optionTrieSelected:"Date"
     };
   },
   methods: {
@@ -62,10 +72,43 @@ export default {
       let index = this.room.indexOf(object)
       this.room.splice(index, 1)
     },
+
+    dropdownchange(option){
+      this.optionTrieSelected=option;
+
+      switch(option){
+        case "Date":
+          this.room.sort(function (a, b) {
+            return a.date.localeCompare(b.date);
+          });
+          break;
+        case "Langage":
+          this.room.sort(function (a, b) {
+            return a.langage.localeCompare(b.langage);
+          });
+          break;
+        case "Durée":
+          this.room.sort(function(a, b) {
+            return b.duree - a.duree;
+          });
+          break;
+      }
+    },
+
+    compareNombresTrie(a, b) {
+      return a.duree - b.duree;
+    }
   },
 
+  created() {
+    this.room.sort(function (a, b) {
+      return a.date.localeCompare(b.date);
+    });
+  },
+  
   components: {
     BoxSalle,
+    DropDownButton
   },
 };
 </script>

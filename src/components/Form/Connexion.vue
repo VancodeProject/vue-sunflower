@@ -38,52 +38,42 @@ export default {
   },
 
   methods: {
-
-    /*login() {
-      this.erorLogin = [];
-       if(this.userName!= "" || this.password != "") {
-          this.erorLogin.push(false);
-          if(this.userName == "Admin" ||this.userName == "Alexandre"||this.userName == "Thomas") {
-            this.erorLogin.push(false);
-            if(this.password == "test"){
-              this.erorLogin.push(false);
-              this.$parent.setAuthenticated(true,this.userName);
-            }else{
-              this.erorLogin.push(true);
-            }
-          } else {
-              this.erorLogin.push(true);
-          }
-        } else {
-            this.erorLogin.push(true);
-        }
-    },*/
-
     login(){
       this.erorLogin = []; // gestion erreurs champs!
+      if(this.userName!= "" || this.password != "") {
+        let userName = this.userName
+        let password = this.password
+        this.$store.dispatch('login', { userName, password }).then(() => {
+          this.$parent.setAuthenticated();
+          this.$parent.$userName = userName;
+        }).catch(err => {
+          this.erorLogin.push(false);
 
-      let userName = this.userName
-      let password = this.password
-      this.$store.dispatch('login', { userName, password }).then(() => {
-        this.$parent.setAuthenticated();
-      }).catch(err => {
-        this.erorLogin.push(true);
-        console.log(err.data)
-      })
+          if(err.response.data.code==1){
+            this.erorLogin.push(true);
+          }else{
+            this.erorLogin.push(false);
+            this.erorLogin.push(true);
+          }
+          
+        })
+      }else {
+          this.erorLogin.push(true);
+      }
     },
 
     reciveDataFromChild (recivedData) {
       this.password = recivedData.password;
-      this.erorLogin[2] = null;
-      this.erorLogin[0] = null;
+      this.erorLogin[2] = false;
+      this.erorLogin[0] = false;
     }
 
   },
   
   watch:{
     userName() {
-       this.erorLogin[1] = null;
-       this.erorLogin[0] = null;
+       this.erorLogin[1] = false;
+       this.erorLogin[0] = false;
     },
 
   },

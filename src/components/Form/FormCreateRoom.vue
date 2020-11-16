@@ -11,12 +11,6 @@
         <input v-else type="text" class="validInput" name="nameRoom" id="nameRoom" v-model="nameRoom" :placeholder="'Programmation en '+selected.value"/>
        
         <label for="chooseLangage">Langage</label>
-        
-        <!--<select name="chooseLangage" class="validInput" v-model="selected">
-          <option v-for="langage in languages" v-bind:key="langage.value">
-            {{ langage.value }}
-          </option>
-        </select>-->
 
         <CustomSelect
           :options="languages"

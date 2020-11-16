@@ -17,7 +17,6 @@ export default new Vuex.Store({
     auth_success(state, token){
         state.status = 'success'
         state.token = token
-      
     },
 
     auth_error(state){
@@ -36,7 +35,6 @@ export default new Vuex.Store({
           axios({url: 'http://localhost:3000/api/login', data: user, method: 'POST' })
           .then(resp => {
               const token = resp.data.token
-              
               localStorage.setItem('token', token)
               axios.defaults.headers.common['Authorization'] = token
               commit('auth_success', token )
@@ -49,11 +47,11 @@ export default new Vuex.Store({
           })
       })
     },
-
+    
     register({commit}, user){
       return new Promise((resolve, reject) => {
         commit('auth_request')
-        axios({url: 'http://localhost:3000/api', data: user, method: 'POST' })
+        axios({url: 'http://localhost:3000/api/register', data: user, method: 'POST' })
         .then(resp => {
           const token = resp.data.token
           localStorage.setItem('token', token)
@@ -63,6 +61,7 @@ export default new Vuex.Store({
         })
         .catch(err => {
           commit('auth_error', err)
+          console.log(err);
           localStorage.removeItem('token')
           reject(err)
         })
@@ -77,6 +76,7 @@ export default new Vuex.Store({
         resolve()
       })
     }
+
   },
   getters : {
     isLoggedIn: state => !!state.token,

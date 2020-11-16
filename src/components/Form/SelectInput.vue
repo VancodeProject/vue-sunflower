@@ -52,20 +52,19 @@ export default {
 }
 
 .select .selected {
-    border-radius: 6px;
-    border: 2px solid var(--greyColor);
-    background-color: #F0F0F0;
-    color: black;
-    outline: none;
-    cursor: pointer;
-    user-select: none;
-    padding:2% ;
-    padding-top: 1%;
-    padding-bottom:1%;
-    font-size: 15px;
-    font-weight: 500;  
-    text-rendering: optimizeLegibility;
-
+  border-radius: 6px;
+  border: 2px solid var(--greyColor);
+  background-color: #F0F0F0;
+  color: black;
+  outline: none;
+  cursor: pointer;
+  user-select: none;
+  padding:2% ;
+  padding-top: 1%;
+  padding-bottom:1%;
+  font-size: 15px;
+  font-weight: 500;  
+  text-rendering: optimizeLegibility;
 }
 
 .select .selected.open {
