@@ -8,12 +8,12 @@
        
         <div id="updateProfil" >
             <form  v-on:submit.prevent="update">
-                <label for="pseudo">Identifiant</label><b class="errorMessage" v-if="erorUserForm[0]">{{msgErrorUserForm[0]}}</b>  
-                <input type="text" v-if="erorUserForm[0]" v-model="user.username" class="errorInput"  name="pseudo" id="pseudo"  />
-                <input type="text" v-else v-model="user.username" class="validInput"  name="pseudo" id="pseudo"  />
+                <label for="pseudo">Identifiant</label><b class="errorMessage" v-if="errorUserForm[0]">{{msgErrorUserForm[0]}}</b>  
+                <input type="text" v-if="errorUserForm[0]" v-model="user.userName" class="errorInput"  name="pseudo" id="pseudo"  />
+                <input type="text" v-else v-model="user.userName" class="validInput"  name="pseudo" id="pseudo"  />
 
-                <label for="adress">Adresse Email</label><b class="errorMessage" v-if="erorUserForm[1]">{{msgErrorUserForm[1]}}</b> 
-                <input type="email" v-if="erorUserForm[1]" v-model="user.email" class="validInput"  name="adress" id="adress" />
+                <label for="adress">Adresse Email</label><b class="errorMessage" v-if="errorUserForm[1]">{{msgErrorUserForm[1]}}</b> 
+                <input type="email" v-if="errorUserForm[1]" v-model="user.email" class="validInput"  name="adress" id="adress" />
                  <input type="email" v-else  v-model="user.email" class="validInput"  name="adress" id="adress" />
 
                 <span id="zoneButton" >
@@ -26,17 +26,17 @@
 
             </div>
             <form v-on:submit.prevent="updatepassword"> 
-                <label>Mot de passe actuel<b class="errorMessage" v-if="erorChangepassword[0]">{{msgErrorPassword[0]}}</b></label>
-                <PasswordInput v-model="password" v-if="erorChangepassword[0]" v-on:sendDataParent="reciveDatapasswordFromChild ($event)" classInput="errorInput"/>
+                <label>Mot de passe actuel<b class="errorMessage" v-if="errorChangepassword[0]">{{msgErrorPassword[0]}}</b></label>
+                <PasswordInput v-model="password" v-if="errorChangepassword[0]" v-on:sendDataParent="reciveDatapasswordFromChild ($event)" classInput="errorInput"/>
                 <PasswordInput v-model="password" v-else v-on:sendDataParent="reciveDatapasswordFromChild ($event)" classInput="validInput"/>
 
-                <b class="errorMessage" v-if="erorChangepassword[1]">{{msgErrorPassword[1]}}</b>
+                <b class="errorMessage" v-if="errorChangepassword[1]">{{msgErrorPassword[1]}}</b>
                  <label>Nouveau mot de passe</label>
-                <PasswordInput v-model="newpassword" v-if="erorChangepassword[1]" v-on:sendDataParent="reciveDataMpdNewFromChild ($event)" classInput="errorInput"/>
+                <PasswordInput v-model="newpassword" v-if="errorChangepassword[1]" v-on:sendDataParent="reciveDataMpdNewFromChild ($event)" classInput="errorInput"/>
                 <PasswordInput v-model="newpassword" v-else v-on:sendDataParent="reciveDataMpdNewFromChild ($event)" classInput="validInput"/>
 
                 <label>Répéter le nouveau mot de passe</label>
-                <PasswordInput v-model="newpasswordRepeat" v-if="erorChangepassword[1]" v-on:sendDataParent="reciveDatapasswordNewCheckFromChild ($event)" classInput="errorInput"/>
+                <PasswordInput v-model="newpasswordRepeat" v-if="errorChangepassword[1]" v-on:sendDataParent="reciveDatapasswordNewCheckFromChild ($event)" classInput="errorInput"/>
                 <PasswordInput v-model="newpasswordRepeat" v-else v-on:sendDataParent="reciveDatapasswordNewCheckFromChild ($event)" classInput="validInput"/>
                 
                 <button class="colorSecondaire">Changer de mot de passe</button>
@@ -50,7 +50,7 @@
 import PasswordInput from '../Form/PasswordInput.vue'
 import Notification from '../utils/notification.vue'
 import {getInfoUser} from '../../assets/utils/backend.js'
-//import {updateInfoUser} from '../../assets/utils/backend.js'
+import {updateMDP} from '../../assets/utils/backend.js'
 import {checkUserName} from '../../assets/utils/checkInput.js'
 import {checkEmail} from '../../assets/utils/checkInput.js'
 import {checkPassword} from '../../assets/utils/checkInput.js'
@@ -63,15 +63,16 @@ export default {
       password:'',
       newpassword:'',
       newpasswordRepeat:'',
-      erorChangepassword: [],
+      errorChangepassword: [],
       msgErrorPassword:[],
-      erorUserForm: [],
+      errorUserForm: [],
       msgErrorUserForm:[]
     };
   },
 
     async created(){
      this.user = await getInfoUser(this.$store.getters.isLoggedIn);   
+     //console.log(this.user);
     },
 
   components:{
@@ -81,21 +82,21 @@ export default {
 
     watch:{
         password(){
-            this.erorChangepassword[0] = null;
+            this.errorChangepassword[0] = null;
         },
         newpassword(){
-            this.erorChangepassword[1] = null;
+            this.errorChangepassword[1] = null;
         },
         newpasswordRepeat(){
-            this.erorChangepassword[1] = null;
+            this.errorChangepassword[1] = null;
         },
 
-        'user.username':function(){
-            this.erorUserForm[0]=null; 
+        'user.userName':function(){
+            this.errorUserForm[0]=null; 
         },
 
         'user.email':function(){
-            this.erorUserForm[1]=null; 
+            this.errorUserForm[1]=null; 
         }
     },
 
@@ -112,30 +113,43 @@ export default {
         this.newpasswordRepeat = recivedData.password;
     },
 
-    async updatepassword(){
-        this.erorChangepassword=[];
+    updatepassword(){
+        this.errorChangepassword=[];
         this.msgErrorPassword=[];
         this.msgErrorPassword.push("Mauvais mot de passe");
         this.msgErrorPassword.push("Les deux mots de passe doivent être identique");
 
         if(this.password!="test"){
-            this.erorChangepassword.push(true);
+            this.errorChangepassword.push(true);
         }else{
-             this.erorChangepassword.push(false);
+             this.errorChangepassword.push(false);
         }
         
         if(this.newpassword!=this.newpasswordRepeat){
-            this.erorChangepassword.push(true); 
+            this.errorChangepassword.push(true); 
         }else{
             if(checkPassword(this.newpassword)){
                 this.msgErrorPassword.splice(1,1,"Minimum 6 caractères")
-                this.erorChangepassword.push(true);
+                this.errorChangepassword.push(true);
             }else{
-                this.erorChangepassword.push(false);
+                this.errorChangepassword.push(false);
             }            
         }
    
-        if(!this.erorChangepassword[0]&&!this.erorChangepassword[1]){
+        if(!this.errorChangepassword[0]&&!this.errorChangepassword[1]){
+            let data = {
+                password: this.password,
+                newpassword: this.newpassword,
+                newpasswordRepeat: this.newpasswordRepeat,
+            };
+
+            updateMDP(this.$store.getters.isLoggedIn,data).then(
+                () =>   this.$refs.notifpassword.setShow(true))
+            .catch(err => {
+               if(err.response.data.code==5){
+                  alert("test");
+                }
+            })
             this.$refs.notifpassword.setShow(true);
         }
     },
@@ -145,33 +159,32 @@ export default {
     },
 
     async update(){
-        this.erorUserForm=[];
+        this.errorUserForm=[];
         this.msgErrorUserForm=[];
 
         this.msgErrorUserForm.push("Au moins 3 caractères");
         this.msgErrorUserForm.push("Email invalide");
 
-        this.erorUserForm.push(checkUserName(this.user.username));
-        this.erorUserForm.push(checkEmail(this.user.email));
+        this.errorUserForm.push(checkUserName(this.user.userName));
+        this.errorUserForm.push(checkEmail(this.user.email));
 
-        if(!this.erorUserForm[0]&&!this.erorUserForm[1]){
+        if(!this.errorUserForm[0]&&!this.errorUserForm[1]){
+            this.$store.dispatch('update', this.user)
+            .then(() =>   this.$refs.notifAccount.setShow(true))
+            .catch(err => {
+               if(err.response.data.code==5){
+                    this.errorUserForm.splice(1,1,true);
+                    this.msgErrorUserForm.splice(1,1,"L'email est deja utilisé");
+                }
+
+                if(err.response.data.code==6){
+                    this.errorUserForm.splice(0,1,true);
+                    this.msgErrorUserForm.splice(0,1,"L'identifiant est deja utilisé");
+                }
+            })
             
-            this.$refs.notifAccount.setShow(true);
-            //let rep = await updateInfoUser(this.user);
-
-            /*if(rep.resp.response.data.code==5){
-                this.erorLogin.splice(1,1,true);
-                this.msgErrorUserForm.splice(1,1,"L'email est deja utilisé");
-            }
-
-            if(rep.resp.response.data.code==6){
-                this.erorLogin.splice(0,1,true);
-                this.msgErrorUserForm.splice(0,1,"L'identifiant est deja utilisé");
-            }*/
-
-            //alert(rep);
         }
-      
+        
     }
 
     

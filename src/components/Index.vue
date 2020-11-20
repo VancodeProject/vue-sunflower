@@ -4,7 +4,7 @@
         <h1>VanCode</h1>
         <span id="rightHeader">
       
-          <button v-if="isLoggedIn"  class="colorSecondaire" @click="$router.push('account')">{{user.username}}</button>
+          <button v-if="isLoggedIn"  class="colorSecondaire" @click="$router.push('account')">{{user.userName}}</button>
           <button v-if="isLoggedIn"  class="grey" @click="logout">Déconnexion</button>
           <button v-else class="colorSecondaire" @click="$router.push('register')">Inscription</button>
         
@@ -12,7 +12,7 @@
         </span>
     </header> 
     <section id="formSection">   
-      <Notification :content='"Bonjour "+user.username' ref="connect"/>
+      <Notification :content='"Bonjour "+user.userName' ref="connect"/>
       <transition name="slide-fade" mode="out-in">
         <FormRoom v-if="isLoggedIn"/>
         <FormCo v-else/> 

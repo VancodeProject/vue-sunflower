@@ -86,8 +86,7 @@ textarea{
 }
 
 #messageInfo{
-  position: absolute;
-  margin-top: 5%;
+  margin-top: 10%;
   font-size: 16px;
   font-weight: 600;
   color:var(--primaryColor);

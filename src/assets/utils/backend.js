@@ -15,20 +15,35 @@ async function getInfoUser(isLoggedIn){
     return user;
 }
 
-
-async function updateInfoUser(user){
-    let rep;
-    await axios({url: 'http://localhost:3000/api/user/account',data:user, method: 'PATH' })
-    .then(resp => {
-        rep=[{error:"false",resp:resp.data}]
-    })
-    .catch(err => {
-        rep=[{error:"false",resp:err}]
-        console.log(err);
-    })
-
-    return rep;
+async function getRoom(isLoggedIn){
+    let room ="";
+    if(isLoggedIn){
+        await axios({url: 'http://localhost:3000/api/user/rooms', method: 'GET' })
+        .then(resp => {
+            room = resp.data;
+            console.log(room);
+        })
+        .catch(err => {
+            console.log(err);
+        })
+    }
+    return room;
 }
 
+async function updateMDP(isLoggedIn,data){
+    if(isLoggedIn){
+        return new Promise((resolve, reject) => {
+            axios({url: 'http://localhost:3000/api/user/account',data:data, method: 'PATCH' })
+            .then(resp => {
+                resolve(resp)
+            })
+            .catch(err => {
+                reject(err)
+            })
+        });
+    }
+}
+
+export{getRoom};
 export{getInfoUser};
-export{updateInfoUser};
+export{updateMDP};

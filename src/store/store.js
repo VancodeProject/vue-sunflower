@@ -61,8 +61,25 @@ export default new Vuex.Store({
         })
         .catch(err => {
           commit('auth_error', err)
-          console.log(err);
           localStorage.removeItem('token')
+          reject(err)
+        })
+      })
+    },
+
+    update({commit}, user){
+      return new Promise((resolve, reject) => {
+        commit('auth_request')
+        axios({url: 'http://localhost:3000/api/user/account',data:user, method: 'PATCH' })
+        .then(resp => {
+          const token = resp.data.token
+          localStorage.setItem('token', token)
+          axios.defaults.headers.common['Authorization'] = token
+          commit('auth_success', token)
+          resolve(resp)
+        })
+        .catch(err => {
+          commit('auth_error', err)
           reject(err)
         })
       })
@@ -78,8 +95,10 @@ export default new Vuex.Store({
     }
 
   },
+
   getters : {
     isLoggedIn: state => !!state.token,
     authStatus: state => state.status,
   }
+
 })
