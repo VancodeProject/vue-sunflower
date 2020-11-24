@@ -119,11 +119,9 @@ export default {
         this.msgErrorPassword.push("Mauvais mot de passe");
         this.msgErrorPassword.push("Les deux mots de passe doivent être identique");
 
-        if(this.password!="test"){
-            this.errorChangepassword.push(true);
-        }else{
-             this.errorChangepassword.push(false);
-        }
+       
+        this.errorChangepassword.push(false);
+        
         
         if(this.newpassword!=this.newpasswordRepeat){
             this.errorChangepassword.push(true); 
@@ -143,11 +141,12 @@ export default {
                 newpasswordRepeat: this.newpasswordRepeat,
             };
 
-            updateMDP(this.$store.getters.isLoggedIn,data).then(
-                () =>   this.$refs.notifpassword.setShow(true))
+            updateMDP(this.$store.getters.isLoggedIn,data).then(() => {
+                this.$refs.notifpassword.setShow(true)}
+            )
             .catch(err => {
-               if(err.response.data.code==5){
-                  alert("test");
+               if(err.response.data.code==3){
+                    this.errorChangepassword.splice(0,1,true);
                 }
             })
             this.$refs.notifpassword.setShow(true);

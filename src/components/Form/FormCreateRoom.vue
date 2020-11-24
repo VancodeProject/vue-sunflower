@@ -48,7 +48,6 @@ export default {
         this.$router.push('salle');
       }
     },
-
     changeInput(selected){
       this.selected = selected;
     }

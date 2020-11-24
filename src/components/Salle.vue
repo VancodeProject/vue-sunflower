@@ -8,15 +8,17 @@
 
     </header> 
     <div id="room">
-        <div id="codeZone"><textarea></textarea></div>
-         <ListUser/>
+        <div id="codeZone">
+            <CodeArea />
+        </div>
+       
     </div>
   </div>
     
 </template>
 
 <script>
-import ListUser from './SalleComponents/listUser'
+import CodeArea from './SalleComponents/codeArea.vue'
 export default {
   data() {
     return{
@@ -24,7 +26,7 @@ export default {
     }
   },
   components:{
-      ListUser
+      CodeArea
   }
 };
 

@@ -89,7 +89,7 @@ export default {
           break;
         case "Langage":
           this.room.sort(function (a, b) {
-            return a.langage.localeCompare(b.langage);
+            return a.name.localeCompare(b.name);
           });
           break;
         case "Durée":

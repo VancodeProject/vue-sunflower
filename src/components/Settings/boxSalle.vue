@@ -11,7 +11,7 @@
       <p>Nombre participant : {{ room.max_users }}</p>
       <p>Derniere modification : {{ room.date_last_change }} </p>
       <p>Durée : {{ room.timer }}</p>
-      <p>Langage : {{ room.langage }}</p>
+      <p>Langage : {{ room.name }}</p>
     </div>
   </span>
 </template>
