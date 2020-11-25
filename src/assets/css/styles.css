@@ -57,6 +57,11 @@ button.grey:hover{
 
 }
 
+h1 {
+  font-weight: 700;
+  font-size: 1.155rem;
+}
+
 h2 {
   margin: 0;
   font-weight: 100;
@@ -148,8 +153,6 @@ header{
 
 header h1 {
   margin-left: 5%;
-  font-weight: 700;
-  font-size: 1.155rem;
 }
 
 header h1 .colorSecondaire{
@@ -207,6 +210,5 @@ button{
 /** Salle **/
 
 #room{
-  width: 80%;
-  margin-left:10%;
+  width: 100%;
 }

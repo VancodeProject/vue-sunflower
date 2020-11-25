@@ -1,20 +1,12 @@
 <template>
-    <div>
-    <header>
-        <h1>{{nameRoom}}</h1>
-        <span id="rightHeader">
-          <button class="colorSecondaire" @click="$router.push('/')">Accueil</button>
-        </span>
-
-    </header> 
     <div id="room">
+        <div id="salleInfo">
+            <h1>{{nameRoom}}</h1>
+        </div>
         <div id="codeZone">
             <CodeArea />
         </div>
-       
     </div>
-  </div>
-    
 </template>
 
 <script>
