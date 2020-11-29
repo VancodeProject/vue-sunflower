@@ -6,6 +6,7 @@
   --redColor:#c52626;
   --greyColor:rgb(150, 150, 150);
   --primaryColor : #2e6f83;
+  --secondaryColor: rgb(211, 211, 211);
 }
 
 *{
@@ -28,6 +29,10 @@
 .colorSecondaire{
   background-color: var(--primaryColor);
   color:white;
+}
+
+.colorLight{
+  background-color: var(--lightBackgroundColor); 
 }
 
 .colorDark{
@@ -71,6 +76,20 @@ h3 {
   font-size: 16px;
   margin: 0;
   font-weight: 100;
+}
+
+h4 {
+  font-size: 16px;
+  margin: 0;
+  font-weight: 100;
+}
+
+i{
+  cursor:pointer;
+}
+
+.logo{
+  color:var(--primaryColor);
 }
 
 p {
@@ -125,7 +144,6 @@ html, body {
 }
 
 #backgroundRegister {
-
 	width: 50%;
   height: 100%;
 
@@ -155,14 +173,6 @@ header h1 {
   margin-left: 5%;
 }
 
-header h1 .colorSecondaire{
-  margin-left: 2.5%;
-  padding: 2px;
-  padding-left: 5%;
-  padding-right: 5%;
-  border-radius: 6px;
-}
-
 header #rightHeader{
   display:flex; 
   flex-direction: row; 
@@ -173,8 +183,8 @@ header #rightHeader{
 
 #circle{
   z-index: 2;
-  height: 10px;
-  width: 10px;
+  min-height: 10px;
+  min-width: 10px;
   border:2px solid var(--darkBackgroundColor);
   border-radius: 50%;
   margin:auto;

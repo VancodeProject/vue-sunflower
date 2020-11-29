@@ -6,16 +6,22 @@
     -o-animation:      switchDarkTheme 1s;  
     animation:         switchDarkTheme 2s;*/
     background-color: var(--darkBackgroundColor);
-  }
+}
 
-  .light{
-    color:black;
+.dark textarea{
+  color:white;
+}
+
+.light{
+  color:black;
    /* -webkit-animation: switchLightTheme 1s; 
     -moz-animation:    switchLightTheme 1s; 
     -o-animation:      switchLightTheme 1s; 
     animation:         switchLightTheme 2s; */
-    background-color: var(white);
-  }
+  background-color: var(white);
+}
 
   
-  
+.light textarea{
+  color:black;
+}

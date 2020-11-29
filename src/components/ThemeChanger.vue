@@ -1,6 +1,6 @@
 <template>
-    <span v-if="themeValue" @click="darkThemeSwitch" id="circle"></span>
-    <span  v-else @click="darkThemeSwitch" id="circle" class="colorDark"></span>
+    <span v-if="themeValue" @click="darkThemeSwitch" id="circle" class="colorDark"></span>
+    <span  v-else @click="darkThemeSwitch" id="circle" class="colorLight"></span>
    
 </template>
 

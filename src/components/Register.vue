@@ -2,7 +2,7 @@
   <div id="Register">
     <header>
       
-        <h1>VanCode</h1>
+        <h1>Van<span class="logo"> {</span>Code<span class="logo">}</span></h1>
         <span id="rightHeader">
           <button class="colorSecondaire" @click="$router.push('/')">Accueil</button>
           <Theme/>

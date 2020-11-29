@@ -1,7 +1,7 @@
 <template>
   <div id="index">
     <header>
-        <h1>VanCode</h1>
+        <h1>Van<span class="logo"> {</span>Code<span class="logo">}</span></h1>
         <span id="rightHeader">
       
           <button v-if="isLoggedIn"  class="colorSecondaire" @click="$router.push('account')">{{user.userName}}</button>
