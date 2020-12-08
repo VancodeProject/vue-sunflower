@@ -128,7 +128,7 @@ html, body {
 
 /** Background **/
 #background {
-  clip-path: circle(98% at 100% 50%);
+  clip-path: circle(85% at 100% 50%);
 	width: 50%;
   height: 100%;
 
