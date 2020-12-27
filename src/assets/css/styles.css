@@ -21,6 +21,7 @@
 @import "./theme.css";
 @import "./setting.css";
 @import "./salle.css";
+@import "./popUp.css";
 
 /*
 * === BODY, APP BACKGROUND ETC. ===
@@ -221,4 +222,6 @@ button{
 
 #room{
   width: 100%;
+  height: 100vh;
+  overflow: hidden;
 }

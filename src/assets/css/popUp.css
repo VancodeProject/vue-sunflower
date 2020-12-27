@@ -1,0 +1,42 @@
+#popUp{
+    position: absolute;
+    width: 100%;
+    min-height: 100vh;
+    max-height: 100vh;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 10;
+}
+
+
+#popUpContent{
+    background-color: var(--currentBackgroundColor);
+    padding: 0;
+    margin-top: 2%;
+    width: 50%;
+    margin-left: 25%;
+    border-radius: 6px;
+}
+
+#popUpContent #title{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    border-radius: 6px 6px 0px 0px;
+}
+
+#popUpContent #title i:hover{
+    color:var(--redColor);
+}
+
+#popUpContent #users{
+    padding: 0% 5% 5% 5%;
+    display:flex;
+    justify-content: space-between;
+}
+
+#popUpContent .usersZone{
+    width: 40%;
+    max-height: 60vh;
+    overflow-y: auto;
+}

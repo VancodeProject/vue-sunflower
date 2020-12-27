@@ -1,86 +1,96 @@
 <template>
     <div id="codeArea">
-        <div v-for="(row) in rows" :key="row.number">
-            <Row :ref="row.number" v-on="handlers" :rowInfos="row" />
+        <div id="lineNumber" ref="numberLine" :style="{ 'background-color': codeZone.color }">
+          
         </div>
-       
+        <div id="textCode" v-on:keyup="keyPressed" spellcheck="false" contentEditable="true" ref="textCode">
+            
+        </div>
+        <div :style="{ height: height + 'px', 'background-color': codeZone.color }" v-if="!this.codeZone.visible" ref="cache" id="cache"></div>
+        
+        <!--<div v-for="(row) in rows" :key="row.number">
+            <Row :ref="row.number" v-on="handlers" :rowInfos="row" />
+        </div>-->
+
      </div>    
 </template>
 
 <script>
-import Row from './row.vue'
+//import Row from './row.vue'
 export default {
-  data(){
-      return{
-        rows:[],
-        handlers:{
-            newRowInfos:this.addRow,
-            changeFocus:this.changeFocus,
-            deleteRow:this.deleteRow,
-            changeCursor:this.changeCursor,
+
+    props: ["codeZone"],
+
+    data(){
+        return{
+            numberLine : 1,
+            oneLineHeight : 0.0,
+            height : 0,
+        }
+    },
+
+    mounted: function () {
+
+        var ce = this.$refs.textCode;
+        ce.addEventListener('paste', function (e) {
+            e.preventDefault()
+            var text = e.clipboardData.getData('text/plain')
+            document.execCommand('insertText', false, text)
+        });
+
+        ce.addEventListener('keydown', function () {
+            if (event.keyCode == 9) {
+                event.preventDefault();
+                document.execCommand('insertText', false, "\t")
+            }
+
+        });
+
+        this.codeZone.content.forEach(ligneText => {
+            this.$refs.textCode.innerHTML+=ligneText+" </br>"
+        });
+
+        // On recupere la taille d'une ligne
+        this.oneLineHeight = this.getSizeTextCode() / (this.codeZone.content.length);
+
+        this.checkNumberLine();
+    },
+
+    methods:{
+        keyPressed: function(event) {
+            if(event.key == "Enter" || event.key == "Backspace" || event.keyCode == 88 && event.ctrlKey)
+                this.checkNumberLine();
+      
+            this.$emit("input", this.codeZone.position, this.$refs.textCode.innerText);
         },
-        currentTextArea:{},
-      }
-  },
 
-  created(){
-      this.createRows(1);
-  },
 
-  components:{
-      Row
-  },
-  
-  methods:{
-    addRow(data){
-        let tempRows = this.rows.filter((el)=>el.number>=data.number).map((el)=>{
-            return  {
-                number:el.number+1,
-                value:el.value
+        getSizeTextCode(){
+            var value = window.getComputedStyle(this.$refs.textCode).height;
+            return value.substring(0, value.length - 2)
+        },
+
+        checkNumberLine(){
+                var currentHeight = this.getSizeTextCode();
+                if(currentHeight != this.oneLineHeight){
+                    this.numberLine = currentHeight/this.oneLineHeight;
+                }else{
+                    this.numberLine = 1;
+                }
+
+                this.displayLineNumber();
+        },
+
+        displayLineNumber(){
+            var numberLine = this.$refs.numberLine;
+            numberLine.innerHTML = "";
+            for (let i = 1; i < this.numberLine+1; i++) {
+                numberLine.innerHTML+=('<span>'+i+'</span>')
             }
-        })
-         
-        const fixedRows = this.rows.filter((el)=>el.number<data.number);
-
-        fixedRows.push(data);
-        this.rows = [...fixedRows,...tempRows];
-    },
-
-    deleteRow(data){
-        this.rows[data.number-2].value += data.value;
-
-        let tempRows = this.rows.filter((el)=>el.number>data.number).map((el)=>{
-            return  {
-                number:el.number-1,
-                value:el.value
-            }
-        })
-        const fixedRows = this.rows.filter((el)=>el.number<data.number);
-        this.rows = [...fixedRows,...tempRows];
-     
-    },
-
-    changeFocus(numberRow){
-        const textArea = this.$children[numberRow];
-        if(textArea){
-            this.currentTextArea=textArea.$refs["rowArea"];
-            this.currentTextArea.focus();
+            
+            this.height = (this.numberLine)*this.oneLineHeight;
         }
-    },
-
-    createRows(number){
-        for (let i = 1; i < number+1; i++) {
-            this.rows.push({number:i,value:""});
-        }
-    },
-
-    changeCursor(value){
-        const cursorPos = value< this.currentTextArea.value.length ? value : this.currentTextArea.value.length;
-        this.currentTextArea.selectionStart=cursorPos; 
-        this.currentTextArea.selectionEnd=cursorPos;   
-    }  
-   
-  }
+    }
 };
 
 </script>

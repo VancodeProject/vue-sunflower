@@ -1,8 +1,11 @@
 #salleInfo{
   float:right;
-  margin-right: 1.5%;
+  padding: 0% 1%;
   width: 27%;
-  overflow: hidden;
+  overflow: auto;
+  border-left:4px solid black;
+  max-height: 100vh;
+  min-height: 100vh;
 }
 
 #salleButton{
@@ -10,63 +13,117 @@
 }
 
 /* Salle */
-#codeArea{
-    width: 70%;
-    height: 100vh;
-    display:flex;
-    flex-direction: column;
-    overflow-y: auto;
-    background-color:var(--secondaryColor);
-}
 
-.row{
-    height: fit-content;
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-}
-
-.row textarea {
-    resize: none;
-    width: 93%;
-    padding-left: 1%;
-    padding-right: 1%;
-    border:none;
-    line-height: 1.6;
-    overflow: hidden;
-    font-size: 15px;
-    tab-size: 2;
-    font-weight: 800;
-  }
-  
-.row .number{
-  text-align: center;
-  width: 5%;
+#titleCodeZone{
+  background-color: var(--primaryColor);
+  border-radius: 6px 6px 0px 0px;
+  padding: 4px 6px;
   font-size: 15px;
+  min-width: 3.5%;
+  white-space: nowrap;
+  text-align: center;
+  overflow: hidden;
+  color:white;
   font-weight: 500;
-
 }
-  
-.row{
-  height: fit-content;
-  width: 100%;
+
+#infoCodeZone{
+  background-color: var(--primaryColor);
+  border-radius: 6px 6px 0px 0px;
+  padding: 4px 6px;
   display: flex;
-  flex-direction: row;
+  font-size: 15px;
 }
 
-/* Liste Utilisateur */
-
-#listUsers{
-  max-height: 80vh;
-  overflow-y: hidden;
+#infoCode{
+  width: 93%;
+  margin-left: 5%;
+  padding: 0 1%;
+  text-align: right;
+  background-color: var(--secondaryColor);
+  border-radius: 0px 0px 6px 6px;
 }
 
-#userItem{
+#infoCode h6{
+  font-size: 9px;
+}
+
+#infoCodeZone i{
+  padding: 0px 6px;
+  color:white;
+}
+
+#infoCodeZone i.disable{
+  color:var(--greyColor);
+}
+
+#infoCodeZone i:hover{
+  color: var(--greyColor);
+}
+
+#codeZone{
+  padding:0% 1%;
+  max-height: 100vh;
+  min-height: 100vh;
+  overflow-y: auto;
+}
+
+#codeArea{
+  position: relative;
+  display: flex;
+  width: 100%;
+  background-color:var(--secondaryColor);
+  line-height: 1;
+}
+
+#codeBox{
+  margin-top: 2%;
+  width: 100%;
+  display:flex;
+  flex-direction: column;
+}
+
+#enteteCodeBox{
   display: flex;
   flex-direction: row; 
   justify-content: space-between;
-  align-items: center;
+  align-items:flex-end;
 }
+
+#cache{
+  background-color: var(--secondaryColor);
+  width: 100%;
+  position: absolute;
+  padding: 6px 0;
+  border-radius: 0px 0px 0px 6px;
+}
+
+#textCode{
+  display: inline-block;
+  height: fit-content;
+  width: 95%;
+  padding: 6px 1%;
+  text-decoration: none;  
+  font-size: 15px;
+  font-weight: 500;
+}
+
+#lineNumber{
+  padding: 6px 0;
+  width: 5%;
+  border-radius: 0px 0px 0px 6px;
+}
+
+#lineNumber span{
+  width: 100%;
+  display: block;
+  text-align: center;
+  color:white;
+  font-size: 15px;
+  padding: 0 1%;
+}
+
+/* Liste Utilisateur */
 
 .avatar{
   min-height: 40px;
