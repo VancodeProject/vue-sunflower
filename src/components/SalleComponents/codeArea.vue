@@ -61,9 +61,8 @@ export default {
             if(event.key == "Enter" || event.key == "Backspace" || event.keyCode == 88 && event.ctrlKey)
                 this.checkNumberLine();
       
-            this.$emit("input", this.codeZone.position, this.$refs.textCode.innerText);
+            this.$emit("input", this.codeZone.id, this.$refs.textCode.innerText);
         },
-
 
         getSizeTextCode(){
             var value = window.getComputedStyle(this.$refs.textCode).height;

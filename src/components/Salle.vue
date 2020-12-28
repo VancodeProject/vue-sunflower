@@ -1,6 +1,6 @@
 <template>
     <div id="room">
-        <PopUp ref="popUp"/>
+        <PopUp ref="popUp" @move-user="popUpEvent"/>
         <div id="salleInfo">
             <div id="salleButton">
                 <button class="colorSecondaire" @click="$router.push('/')">Accueil</button>
@@ -20,12 +20,12 @@
            
             <br>
           
-            <ListUser title="Listes des participants" :users="listUser" />
+            <ListUser title="Listes des participants" :users="listUser" :editable="false" :listId="0"/>
         </div>
         <div id="codeZone" >
             <div id="codeBox" v-for="(codeZone) in codeZones" :key="codeZone.id">
                 <div id="enteteCodeBox">
-                    <div spellcheck="false" ref="titleCodeBox" contentEditable="true" :data-index="codeZone.id" v-on:keyup="changeTitle" :style="{'background-color': codeZone.color }" id="titleCodeZone">
+                    <div spellcheck="false" ref="titleCodeBox" contentEditable="true" @keydown.enter.exact.prevent :data-index="codeZone.id" v-on:blur="changeTitle" :style="{'background-color': codeZone.color }" id="titleCodeZone">
                     {{codeZone.title}}
                     </div>
                     <div id="infoCodeZone">
@@ -39,12 +39,12 @@
                         </span>
 
                         <span>
-                            <i v-if="codeZone.id>1" v-on:click="switchCodeZone((Number(codeZone.position)-2),(Number(codeZone.position)-1))" class="fa fa-arrow-up" aria-hidden="true"></i>
+                            <i v-if="codeZone.position>1" v-on:click="switchCodeZone((Number(codeZone.position)-2),(Number(codeZone.position)-1))" class="fa fa-arrow-up" aria-hidden="true"></i>
                             <i v-else class="fa fa-arrow-up disable"  aria-hidden="true"></i>                        
                         </span>
 
                         <span>
-                            <i v-if="codeZone.id<codeZones.length" v-on:click="switchCodeZone(codeZone.position,(Number(codeZone.position)-1))" class="fa fa-arrow-down"  aria-hidden="true"></i>
+                            <i v-if="codeZone.position<codeZones.length" v-on:click="switchCodeZone(codeZone.position,(Number(codeZone.position)-1))" class="fa fa-arrow-down"  aria-hidden="true"></i>
                             <i v-else class="fa fa-arrow-down disable"  aria-hidden="true"></i>
                         </span>
                     
@@ -54,7 +54,7 @@
                     </div>
                 </div>
                 
-                <CodeArea  v-on:input="updateCodeArea()" :codeZone="codeZone" @input="updateCodeArea"/>
+                <CodeArea :codeZone="codeZone" @input="updateCodeArea"/>
                 <div id="infoCode">
                    <h6>Nombre de codeurs : {{codeZone.userId.length}}</h6> 
                 </div>
@@ -148,15 +148,17 @@ export default {
             if(content == null) content =[""];
 
             let color = this.colorsForZone[this.codeZones.length%this.colorsForZone.length]
-            let codeZone = {id:Number(this.codeZones.length)+1,position:Number(this.codeZones.length)+1, title : "titre "+(Number(this.codeZones.length)+1),content: content, color: color, userId :[], visible : true};
+            const newid = this.findIdToCreate();
+            let codeZone = {id:newid,position:Number(this.codeZones.length)+1, title : "titre "+newid,content: content, color: color, userId :[], visible : true};
             this.codeZones.push(codeZone);
         },
 
-        updateCodeArea(position, value){
-            if(position && value){
+        //TODO : Reussir a bien split dans les tableaux
+        updateCodeArea(id, value){
+            if(id && value){
                 let newValue = value.split('\n');
                 newValue = newValue.filter(line => line !== "");
-                this.codeZones[Number(position)- 1].content = newValue;
+                this.codeZones[this.findIdWithId(id,this.codeZones)].content = newValue;
             }
         },
 
@@ -166,15 +168,14 @@ export default {
                 codeZone.content.forEach(text => {
                     myContent.push(text);
                 });
-
             });
 
             this.addCodeZone(null,myContent);        
         },
 
-        changeTitle: function(){
-            /*let index = Number(e.target.getAttribute("data-index"))-1;
-            this.codeZones[index].title = e.target.innerHTML;*/
+        changeTitle: function(e){
+            let index = this.findIdWithId(e.target.getAttribute("data-index"), this.codeZones);
+            this.codeZones[index].title = e.target.innerHTML;
         },
 
         openPopUp(position){
@@ -202,7 +203,50 @@ export default {
             });
 
             return userSelect;
-        }
+        },
+
+        findIdWithId(id, arrayToFind){
+            for(let i = 0; i < arrayToFind.length; i++){
+                if(arrayToFind[i].id == id) return i;
+            }
+
+            return -1;
+        },
+
+        findIndexWithIdUserCode(idUser, codeZoneId){
+            for(let i = 0; i < this.codeZones[codeZoneId].userId.length; i++){
+                if(this.codeZones[codeZoneId].userId[i] == idUser) return i;
+            }
+        },
+
+        findIdToCreate(){
+            let maxid=0;
+            for(let i = 0; i < this.codeZones.length; i++){
+                if(this.codeZones[i].id > maxid) maxid = this.codeZones[i].id
+            }
+            return Number(maxid)+1;
+        },
+
+        popUpEvent(idCodeZone,idUser,add){
+            if(add) this.addUserOnCodeZone(idCodeZone,idUser)
+            else this.removeUserOnCodeZone(idCodeZone,idUser)
+        },
+
+        addUserOnCodeZone(idCodeZone,idUser){
+            let index = this.findIdWithId(idCodeZone,this.codeZones);
+            let indexUser =  this.findIdWithId(idUser,this.listUser);
+            this.codeZones[index].userId.push(this.listUser[indexUser].id);
+
+            console.log("J'ajoute : "+this.listUser[indexUser].name);
+            console.log(this.codeZones[index].userId);
+        },
+
+        removeUserOnCodeZone(idCodeZone,idUser){
+            let index = this.findIdWithId(idCodeZone,this.codeZones);
+            let indexUser=  this.findIndexWithIdUserCode(idUser,index)
+            this.codeZones[index].userId.splice(indexUser,1);
+        },
+
     }
   
 };

@@ -9,13 +9,13 @@
           <br>
           <div id = "users">
             <div class="usersZone">
-              <ListUser title="Codeurs déjà selectionnée"  :users="content.listUserSelected"/>
+              <ListUser title="Codeurs déjà selectionnée"  :users="content.listUserSelected" editable="true" :listId="1" @send-user="switchUser"/>
             </div>
 
             <div id="separator"></div>
 
             <div class="usersZone">
-              <ListUser title="Autres utilisateurs"  :users="content.listUser"/>
+              <ListUser title="Autres utilisateurs"  :users="content.listUser" editable="true" :listId="2" @send-user="switchUser"/>
             </div>
           </div>
       </div>
@@ -29,9 +29,10 @@
     data () {
       return {
         show:false,
-        content : null
+        content : null,
       }
     },
+
     components:{
       ListUser
     },
@@ -43,14 +44,36 @@
         value? this.setContent(content):this.setContent(null);
       },
 
-    setContent(content){
-        this.content = content;
-      }
-    },
+      setContent(content){
+          this.content = content;
+      },
+      
+      switchUser(id, listId) {
+        let index;
+        let user;
 
-    test(){
-      alert("hihi");
-      this.stopPropagation();
-    }
+        if(listId == 1) {
+          index = this.findIndexWithId(id, this.content.listUserSelected);
+          user = this.content.listUserSelected.splice(index, 1); 
+          
+          this.content.listUser.push(user[0])
+        }
+        else if(listId == 2){
+          index = this.findIndexWithId(id, this.content.listUser);
+          user = this.content.listUser.splice(index, 1); 
+          
+          this.content.listUserSelected.push(user[0])
+        }
+
+        this.$emit('move-user', this.content.codeZone.id, id, listId!=1);
+      },
+
+      findIndexWithId(id,arrayToFind){
+        for(let i = 0; i < arrayToFind.length; i++){
+          if(id == arrayToFind[i].id) return i;
+        }
+      },
+    
+    },
   }
 </script>
