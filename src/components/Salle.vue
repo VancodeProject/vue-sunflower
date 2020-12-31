@@ -1,6 +1,7 @@
 <template>
     <div id="room">
-        <PopUp ref="popUp" @move-user="popUpEvent"/>
+        <PopUp ref="popUpName" typePopUp="user" @add-user="addUser"/>
+        <PopUp ref="popUp" typePopUp="listeUser" @move-user="popUpEvent"/>
         <div id="salleInfo">
             <div id="salleButton">
                 <button class="colorSecondaire" @click="$router.push('/')">Accueil</button>
@@ -8,13 +9,15 @@
             </div>
             <br>
             <h1>{{nameRoom}}</h1>
-           
+            <h4>langage : {{langage}}</h4>
+           <br>
             <div v-if="admin">
                 <h3>Actions</h3>
 
                 <div id="salleButton">
-                    <button class="colorSecondaire" @click="addCodeZone" >Ajout zone code</button>
-                    <button class="colorSecondaire" @click="fusionCodeZone">Fussioner zone code</button>
+                    <button class="colorSecondaire" @click="addCodeZone" >Ajouter zone de code</button>
+                    <button class="colorSecondaire" @click="fusionCodeZone">Fussioner code</button>
+                    <button class="colorSecondaire" @click="removeAllCodeZone">Supprimer les zones</button>
                 </div>
             </div>
            
@@ -22,8 +25,8 @@
           
             <ListUser title="Listes des participants" :users="listUser" :editable="false" :listId="0"/>
         </div>
-        <div id="codeZone" >
-            <div id="codeBox" v-for="(codeZone) in codeZones" :key="codeZone.id">
+        <div id="codeZone" v-if="codeZones.length > 0" >
+            <div id="codeBox" v-for="(codeZone) in codeZones" :key="codeZone.id" ref="codeBox">
                 <div id="enteteCodeBox">
                     <div spellcheck="false" ref="titleCodeBox" contentEditable="true" @keydown.enter.exact.prevent :data-index="codeZone.id" v-on:blur="changeTitle" :style="{'background-color': codeZone.color }" id="titleCodeZone">
                     {{codeZone.title}}
@@ -54,14 +57,18 @@
                     </div>
                 </div>
                 
-                <CodeArea :codeZone="codeZone" @input="updateCodeArea"/>
+                <CodeArea :codeZone="codeZone" :editable="checkCanEdit(codeZone)" @input="updateCodeArea" :ref="'codeZone' + codeZone.id"/>
                 <div id="infoCode">
                    <h6>Nombre de codeurs : {{codeZone.userId.length}}</h6> 
                 </div>
             </div>
         </div>
-     
-
+        <div id="zoneVideMessage" v-else-if="admin">
+           <div>
+                Voila une salle bien vide!
+                <button v-on:click="addCodeZone" class="colorSecondaire"> <i class="fa fa-plus" aria-hidden="true"></i>Zone de code</button>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -69,30 +76,33 @@
 import CodeArea from './SalleComponents/codeArea.vue'
 import ListUser from './SalleComponents/listUser.vue'
 import PopUp from './utils/popUp.vue'
+import {getInfoUser} from '../assets/utils/backend.js'
 
 export default {
   data() {
         return{
             nameRoom:"Programmation en C",
+            langage:"c",
             codeZones: [
-                {id:"1", position:"1", title : "Exercice de programmation niveau debutant", content: ["Print ('Hello worl!')", " plusieurs ligne au chargement " ], color: "#583d72", userId :[1,2], visible : true},
+                /*{id:"1", position:"1", title : "Exercice de programmation niveau debutant", content: ["Print ('Hello worl!')", " plusieurs ligne au chargement " ], color: "#583d72", userId :[1,2], visible : true},*/
             ],
 
             colorsForZone:['#583d72','#9f5f80','#ffba93','#DB7F67','#A37B73'],
 
+            // status p = participant | status admin = administrateur
             listUser : [
-                {id:1,name:"Alexandre"},
-                {id:2,name:"Thomas"},
-                {id:3,name:"Pierre"},
-                {id:4,name:"Vancode"},
-                {id:5,name:"Hercule"},
-                {id:6,name:"Jean"},
+                {id:1,name:"Robin",status:"p"},
+                {id:2,name:"Thomas",status:"p"},
+                {id:3,name:"Pierre",status:"p"},
+                {id:4,name:"Vancode",status:"p"},
+                {id:5,name:"Hercule",status:"p"},
+                {id:6,name:"Jean",status:"p"},
             ],
 
             // On initialise le WebSocket a null
             ws: null,
-
             admin : true,
+            user : ""
         }
     },
     
@@ -130,6 +140,10 @@ export default {
                 case "TXT": {
                     let zone = this.codeZones.find( (zone) => zone.id === data.id);
                     zone.content = data.content;
+
+                    let ref = "codeZone"+data.id;
+                    this.$refs[ref][0].changeText(data.content);
+       
                     break;
                 }
 
@@ -154,8 +168,21 @@ export default {
                 case "DUL":
                     this.removeUserOnCodeZone(data.idCode, data.idUser)
                     break;
+                
+                 /*case "PR":
+                    this.removeAllCodeZone();
+                    break;
+                case "AULL":
+                    this.addUser(data.user,data.first)
+                    break;*/
             }
         };
+
+        if(!this.admin){
+            this.$refs.popUpName.setShow(true,"");
+        }else{
+            this.addUserTempon();
+        }
     },
 
     methods:{
@@ -246,6 +273,13 @@ export default {
             this.addCodeZone(null,myContent);        
         },
 
+        removeAllCodeZone(){
+            this.codeZones=[];
+
+            //TODO : ajoute en boucle 1
+            /*this.sendWSMessage("PR");*/
+        },
+
         changeTitle: function(e){
             let index = this.findIdWithId(e.target.dataset.index, this.codeZones);
             this.codeZones[index].title = e.target.innerHTML;
@@ -266,6 +300,16 @@ export default {
                 return !userSelect.includes( el );
             } );
 
+            //on enleve les users qui sont deja sélectionné 
+            users = users.filter( function( el ) {
+                return !userSelect.includes( el );
+            } );
+
+            //on enleve les admins car ils peuvent coder partout
+            users = users.filter( function( el ) {
+                 return el.status !== 'admin';
+            } );
+
             content = {codeZone:codeZone, listUser:users, listUserSelected : userSelect},
             this.$refs.popUp.setShow(true,content);
         },
@@ -274,7 +318,7 @@ export default {
             var userSelect = [];
             codeZone.userId.forEach(userId => {
                 this.listUser.forEach(user => {
-                    if(user.id == userId)
+                    if(user.id == userId && user.status!="admin")
                         userSelect.push(user);
                 })
 
@@ -325,9 +369,6 @@ export default {
             let index = this.findIdWithId(idCodeZone,this.codeZones);
             let indexUser =  this.findIdWithId(idUser,this.listUser);
             this.codeZones[index].userId.push(this.listUser[indexUser].id);
-
-            console.log("J'ajoute : "+this.listUser[indexUser].name);
-            console.log(this.codeZones[index].userId);
         },
 
         removeUserOnCodeZone(idCodeZone,idUser){
@@ -335,6 +376,37 @@ export default {
             let indexUser=  this.findIndexWithIdUserCode(idUser,index)
             this.codeZones[index].userId.splice(indexUser,1);
         },
+
+        async addUserTempon(){
+            let user = await getInfoUser(this.$store.getters.isLoggedIn);
+            this.addUser(user.userName,true);
+        },
+
+        addUser(userName,first){
+            let id=0;
+            //TODO : verifier que ca marche bien la recherche d'id! 
+            this.listUser.forEach(user => {
+                if(id  <= user.id)
+                    id=user.id+1
+            });
+
+            first?this.user={id:id,name:userName,status:"admin"}:this.user={id:id,name:userName,status:"p"}
+            first?this.listUser.unshift(this.user):this.listUser.push(this.user);
+
+            //TODO : ajoute en boucle 2
+            /*this.sendWSMessage("AULL",
+                {
+                    user: this.user,
+                    fist: first
+                }
+            )*/
+            
+        },
+
+        checkCanEdit(codeZone){
+            return codeZone.userId.includes(this.user.id)||this.admin;
+        },
+        
 
         sendWSMessage(eventType, message) {
             // On envoie la fusion entre le type de message et le message donne
@@ -345,7 +417,8 @@ export default {
                 type: eventType,
                 ...message
             }))
-        }
+        },
+        
 
     }
   

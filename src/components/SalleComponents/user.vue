@@ -1,8 +1,12 @@
 <template>
   <div id="userItem">
       <div id="userInfo">
-        <span class="avatar">{{user.name.substring(0, 2)}}</span>
-        <h4>{{user.name}}</h4>
+        <span id="name">
+          <span class="avatar">{{user.name.substring(0, 2)}}</span>
+          <h4>{{user.name}}</h4>
+        </span>
+       
+        <h4 style="float:left" v-if="user.status == 'admin'"> admin </h4>
       </div>
   </div>
 </template>
@@ -22,9 +26,15 @@ export default {
   #userInfo{
     display: flex;
     align-items: center;
-    width: 80%;
+    width: 100%;
+    justify-content: space-between;
   }
 
+  #name{
+    display: flex;
+    align-items: center;
+    width: 70%;
+  }
   h4{
     overflow: hidden;
   }

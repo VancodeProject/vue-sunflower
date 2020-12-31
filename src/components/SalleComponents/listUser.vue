@@ -42,6 +42,7 @@ export default {
     margin-bottom:1.5%;
     background-color:var(--secondaryColor);
     border-radius:6px;
+    cursor: pointer;
   }
 
   #number{

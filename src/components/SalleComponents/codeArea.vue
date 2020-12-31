@@ -3,7 +3,7 @@
         <div id="lineNumber" ref="numberLine" :style="{ 'background-color': codeZone.color }">
           
         </div>
-        <div id="textCode" v-on:keyup="keyPressed" spellcheck="false" contentEditable="true" ref="textCode">
+        <div id="textCode" v-on:keyup="keyPressed" spellcheck="false" :contentEditable="editable" ref="textCode">
             
         </div>
         <div :style="{ height: height + 'px', 'background-color': codeZone.color }" v-if="!this.codeZone.visible" ref="cache" id="cache"></div>
@@ -12,14 +12,14 @@
             <Row :ref="row.number" v-on="handlers" :rowInfos="row" />
         </div>-->
 
-     </div>    
+    </div>    
 </template>
 
 <script>
 //import Row from './row.vue'
 export default {
 
-    props: ["codeZone"],
+    props: ["codeZone","editable"],
 
     data(){
         return{
@@ -62,6 +62,15 @@ export default {
                 this.checkNumberLine();
       
             this.$emit("input", this.codeZone.id, this.$refs.textCode.innerText);
+        },
+
+        changeText:function(content){
+            this.$refs.textCode.innerHTML="";
+            content.forEach(ligneText => {
+                this.$refs.textCode.innerHTML+=ligneText+" </br>"
+            });
+
+            this.checkNumberLine();
         },
 
         getSizeTextCode(){

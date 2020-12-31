@@ -42,7 +42,6 @@ export default {
 
   created() {
     if(this.$store.getters.isLoggedIn){
-      this.userName = "test";
       this.getUser();
     }
   },
