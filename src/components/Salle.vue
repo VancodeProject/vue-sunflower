@@ -49,7 +49,7 @@
                         </span>
                     
                         <span v-if="admin">
-                            <i class="fa fa-close" v-on:click="removeCodeZone((Number(codeZone.position)-1))" aria-hidden="true"></i>
+                            <i class="fa fa-close" v-on:click="removeCodeZone((Number(codeZone.position)-1), true)" aria-hidden="true"></i>
                         </span>
                     </div>
                 </div>
@@ -89,6 +89,9 @@ export default {
                 {id:6,name:"Jean"},
             ],
 
+            // On initialise le WebSocket a null
+            ws: null,
+
             admin : true,
         }
     },
@@ -97,6 +100,62 @@ export default {
         ListUser,
         CodeArea,
         PopUp
+    },
+
+    mounted() {
+        // Commencer la connexion WebSocket avec le serveur
+        this.ws = new WebSocket('ws://localhost:3000', 'code-simu')
+        this.ws.onerror = () => {
+            // TODO: Rendre ca plus joli si le temps
+            alert("Probleme de connexion avec le serveur. Redirection vers l'accueil.");
+            // Si on ne peut connecter on redirige l'utilisateur vers la page de connexion
+            window.location = "/";
+        };
+
+        this.ws.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            /*
+                STR = STaRt (les donnees de debut (si on arrive en cours de session))
+                TXT = TEXT
+                ACZ = Add Code Zone (Ajout et Fusion)
+                DCZ = Delete Code Zone
+                UCZ = Update Code Zone (titre)
+                MUL = Modify User List
+            */
+            switch (data.type) {
+                case "STR": {
+                    break;
+                }
+
+                case "TXT": {
+                    let zone = this.codeZones.find( (zone) => zone.id === data.id);
+                    zone.content = data.content;
+                    break;
+                }
+
+                case "ACZ":
+                    this.codeZones.push(data.zone);
+                    break;
+
+                case "DCZ": {
+                    const position = this.codeZones.find((zone) => zone.id === data.id).position;
+                    this.removeCodeZone(parseInt(position) - 1, false);
+                    break;
+                }
+                
+                case "UCZ":
+                    this.codeZones[data.index].title = data.title;
+                    break;
+
+                case "AUL":
+                    this.addUserOnCodeZone(data.idCode, data.idUser)
+                    break;
+                
+                case "DUL":
+                    this.removeUserOnCodeZone(data.idCode, data.idUser)
+                    break;
+            }
+        };
     },
 
     methods:{
@@ -123,21 +182,26 @@ export default {
 
             oldTemps.position = this.codeZones[newPosition].position;
 
-            this.codeZones .splice(newPosition, 1,oldTemps);
-            this.codeZones .splice(oldPosition, 1,newTemps);
+            this.codeZones.splice(newPosition, 1,oldTemps);
+            this.codeZones.splice(oldPosition, 1,newTemps);
 
             this.$forceUpdate();
         },
         
-        removeCodeZone(id){
-            this.codeZones.splice(id, 1);
+        removeCodeZone(position, shouldWSCall){
+            const suppressed = this.codeZones.splice(position, 1)[0];
 
             let compteur = 1;
 
             this.codeZones.forEach(codeZone => {
                 codeZone.position = compteur;
-                compteur ++;
+                compteur++;
             });
+
+            if (shouldWSCall) 
+                this.sendWSMessage("DCZ", {
+                    id: suppressed.id,
+                });
         },
 
         setVisible(id, value){
@@ -145,20 +209,29 @@ export default {
         },
 
         addCodeZone(event,content){
-            if(content == null) content =[""];
+            if(content == null) content = [""];
 
             let color = this.colorsForZone[this.codeZones.length%this.colorsForZone.length]
             const newid = this.findIdToCreate();
             let codeZone = {id:newid,position:Number(this.codeZones.length)+1, title : "titre "+newid,content: content, color: color, userId :[], visible : true};
             this.codeZones.push(codeZone);
+            // On envoie une requete pour creer une nouvelle code zone a tous les utilisateurs
+            this.sendWSMessage("ACZ", {
+                zone: codeZone
+            });
         },
 
         //TODO : Reussir a bien split dans les tableaux
         updateCodeArea(id, value){
             if(id && value){
-                let newValue = value.split('\n');
-                newValue = newValue.filter(line => line !== "");
+                const newValue = value.split('\n').filter(line => line !== "");
                 this.codeZones[this.findIdWithId(id,this.codeZones)].content = newValue;
+                // On envoie une requete WebSocket pour dire aux autres utilisateurs de modifier leur codeZone
+                // TODO: Trouver le soucis avec la mise a jour de la codeZone
+                this.sendWSMessage("TXT", {
+                    id: id,
+                    content: newValue,
+                });
             }
         },
 
@@ -174,8 +247,13 @@ export default {
         },
 
         changeTitle: function(e){
-            let index = this.findIdWithId(e.target.getAttribute("data-index"), this.codeZones);
+            let index = this.findIdWithId(e.target.dataset.index, this.codeZones);
             this.codeZones[index].title = e.target.innerHTML;
+
+            this.sendWSMessage("UCZ", {
+                index: index,
+                title: e.target.innerHTML
+            });
         },
 
         openPopUp(position){
@@ -228,8 +306,19 @@ export default {
         },
 
         popUpEvent(idCodeZone,idUser,add){
-            if(add) this.addUserOnCodeZone(idCodeZone,idUser)
-            else this.removeUserOnCodeZone(idCodeZone,idUser)
+            if (add)
+                this.addUserOnCodeZone(idCodeZone,idUser)
+            else
+                this.removeUserOnCodeZone(idCodeZone,idUser)
+            
+            this.sendWSMessage(
+                add ? "AUL" : "DUL",
+                {
+                    idCode: idCodeZone,
+                    idUser: idUser
+                }
+            )
+           
         },
 
         addUserOnCodeZone(idCodeZone,idUser){
@@ -246,6 +335,17 @@ export default {
             let indexUser=  this.findIndexWithIdUserCode(idUser,index)
             this.codeZones[index].userId.splice(indexUser,1);
         },
+
+        sendWSMessage(eventType, message) {
+            // On envoie la fusion entre le type de message et le message donne
+            // Pour se faire on utilise le spread operator (...)
+            // On a choisit d'utiliser cettre approche a la place de mettre le type
+            // directement dans le message de base afin de rendre le type de message plus clair
+            this.ws.send(JSON.stringify({
+                type: eventType,
+                ...message
+            }))
+        }
 
     }
   
