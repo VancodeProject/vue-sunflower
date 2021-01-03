@@ -169,7 +169,8 @@ export default {
                     this.removeUserOnCodeZone(data.idCode, data.idUser)
                     break;
                 
-                 /*case "PR":
+                 /*
+                 case "PR":
                     this.removeAllCodeZone();
                     break;
                 case "AULL":
