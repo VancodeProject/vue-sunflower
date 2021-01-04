@@ -96,7 +96,7 @@
       addUser(){
         this.erorLogin = []; // gestion erreurs champs!
         if(this.userName!= "" && this.userName.length >= 2) {
-          this.$emit('add-user', this.userName,false);
+          this.$emit('add-user', this.userName, false, true);
           this.setShow(false,null);
         }else {
             this.erorLogin.push(true);

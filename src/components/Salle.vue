@@ -101,7 +101,9 @@ export default {
 
             // On initialise le WebSocket a null
             ws: null,
-            admin : true,
+            queue: [],
+
+            admin : false,
             user : ""
         }
     },
@@ -122,6 +124,11 @@ export default {
             window.location = "/";
         };
 
+        this.ws.onopen = () => {
+            // TODO: Envoyer la requete WS pour recevoir l'etat actuel de la page
+            setInterval(this.sendWSMessage, 100)
+        }
+
         this.ws.onmessage = (event) => {
             const data = JSON.parse(event.data);
             /*
@@ -130,10 +137,25 @@ export default {
                 ACZ = Add Code Zone (Ajout et Fusion)
                 DCZ = Delete Code Zone
                 UCZ = Update Code Zone (titre)
-                MUL = Modify User List
+                AUL = Add User List
+                DUL = Delete User List
+                RAZ = Remove All Zone
+                ANU = Add New User
             */
             switch (data.type) {
                 case "STR": {
+                    this.codeZones = data.zones.map((zone) => {
+                        return {
+                            id: zone.id,
+                            position: zone.id,
+                            title: zone.title,
+                            content: zone.content,
+                            color: this.colorsForZone[parseInt(this.zone.id)%this.colorsForZone.length],
+                            userId: zone.users,
+                            visible: true,
+                        }
+                    })
+                    this.listUser = data.users
                     break;
                 }
 
@@ -169,13 +191,13 @@ export default {
                     this.removeUserOnCodeZone(data.idCode, data.idUser)
                     break;
                 
-                 /*
-                 case "PR":
-                    this.removeAllCodeZone();
+                 case "RAZ":
+                    this.codeZones = [];
                     break;
-                case "AULL":
-                    this.addUser(data.user,data.first)
-                    break;*/
+                
+                case "ANU":
+                    this.addUser(data.user.name, data.first, false)
+                    break;
             }
         };
 
@@ -188,7 +210,7 @@ export default {
 
     methods:{
         closeRoom(){
-            
+            // TODO: Envoyer requete a la BD pour sauvegarder la salle
         },
         
         getNameZone(id){
@@ -227,7 +249,7 @@ export default {
             });
 
             if (shouldWSCall) 
-                this.sendWSMessage("DCZ", {
+                this.addToSendQueue("DCZ", {
                     id: suppressed.id,
                 });
         },
@@ -239,12 +261,20 @@ export default {
         addCodeZone(event,content){
             if(content == null) content = [""];
 
-            let color = this.colorsForZone[this.codeZones.length%this.colorsForZone.length]
-            const newid = this.findIdToCreate();
-            let codeZone = {id:newid,position:Number(this.codeZones.length)+1, title : "titre "+newid,content: content, color: color, userId :[], visible : true};
+            const color = this.colorsForZone[this.codeZones.length%this.colorsForZone.length]
+            const codeZone = {
+                id: this.findIdToCreate(),
+                position: Number(this.codeZones.length)+1, 
+                title : "titre " + newid,
+                content: content, 
+                color: color, 
+                userId: [], 
+                visible : true
+            };
+
             this.codeZones.push(codeZone);
             // On envoie une requete pour creer une nouvelle code zone a tous les utilisateurs
-            this.sendWSMessage("ACZ", {
+            this.addToSendQueue("ACZ", {
                 zone: codeZone
             });
         },
@@ -255,8 +285,7 @@ export default {
                 const newValue = value.split('\n').filter(line => line !== "");
                 this.codeZones[this.findIdWithId(id,this.codeZones)].content = newValue;
                 // On envoie une requete WebSocket pour dire aux autres utilisateurs de modifier leur codeZone
-                // TODO: Trouver le soucis avec la mise a jour de la codeZone
-                this.sendWSMessage("TXT", {
+                this.addToSendQueue("TXT", {
                     id: id,
                     content: newValue,
                 });
@@ -275,17 +304,15 @@ export default {
         },
 
         removeAllCodeZone(){
-            this.codeZones=[];
-
-            //TODO : ajoute en boucle 1
-            /*this.sendWSMessage("PR");*/
+            this.codeZones = [];
+            this.addToSendQueue("RAZ");
         },
 
         changeTitle: function(e){
             let index = this.findIdWithId(e.target.dataset.index, this.codeZones);
             this.codeZones[index].title = e.target.innerHTML;
 
-            this.sendWSMessage("UCZ", {
+            this.addToSendQueue("UCZ", {
                 index: index,
                 title: e.target.innerHTML
             });
@@ -356,7 +383,7 @@ export default {
             else
                 this.removeUserOnCodeZone(idCodeZone,idUser)
             
-            this.sendWSMessage(
+            this.addToSendQueue(
                 add ? "AUL" : "DUL",
                 {
                     idCode: idCodeZone,
@@ -380,27 +407,32 @@ export default {
 
         async addUserTempon(){
             let user = await getInfoUser(this.$store.getters.isLoggedIn);
-            this.addUser(user.userName,true);
+            this.addUser(user.userName, true, true);
         },
 
-        addUser(userName,first){
-            let id=0;
-            //TODO : verifier que ca marche bien la recherche d'id! 
-            this.listUser.forEach(user => {
-                if(id  <= user.id)
-                    id=user.id+1
-            });
+        addUser(userName, first, shouldWSCall){
+            const id = this.listUser.map(el => el.id).sort()[this.listUser.length-1] + 1;
 
-            first?this.user={id:id,name:userName,status:"admin"}:this.user={id:id,name:userName,status:"p"}
-            first?this.listUser.unshift(this.user):this.listUser.push(this.user);
+            const common = {
+                id: id,
+                name: userName,
+            }
 
-            //TODO : ajoute en boucle 2
-            /*this.sendWSMessage("AULL",
-                {
-                    user: this.user,
-                    fist: first
-                }
-            )*/
+            if (first) {
+                this.user = {...common, status: "admin"}
+                this.listUser.unshift(this.user)
+            } else {
+                this.user = {...common, status: "p"}
+                this.listUser.push(this.user)
+            }
+
+            if (shouldWSCall)
+                this.addToSendQueue("ANU",
+                    {
+                        user: this.user,
+                        first: first
+                    }
+                )
             
         },
 
@@ -408,19 +440,27 @@ export default {
             return codeZone.userId.includes(this.user.id)||this.admin;
         },
         
-
-        sendWSMessage(eventType, message) {
-            // On envoie la fusion entre le type de message et le message donne
+        // TODO: Ajouter le slang dans le message directement ici
+        addToSendQueue(eventType, message) {
+            // On ajoute la fusion entre le type de message et le message donne
             // Pour se faire on utilise le spread operator (...)
             // On a choisit d'utiliser cettre approche a la place de mettre le type
             // directement dans le message de base afin de rendre le type de message plus clair
-            this.ws.send(JSON.stringify({
+            this.queue.push(JSON.stringify({
                 type: eventType,
-                ...message
+                ...message,
             }))
         },
         
+        sendWSMessage() {
+            if (this.queue.length == 0) return
 
+            this.queue.forEach((message) => {
+                this.ws.send(message)
+            })
+            this.queue = []
+        },
+        
     }
   
 };
