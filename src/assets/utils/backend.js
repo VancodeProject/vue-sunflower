@@ -44,6 +44,15 @@ async function updateMDP(isLoggedIn,data){
     }
 }
 
+async function getSlang(data) {
+    return new Promise((resolve, reject) => {
+        axios({url: 'http://localhost:3000/api/room/slang', data:data, method: 'GET' })
+        .then(resp => resolve(resp))
+        .catch(err => reject(err))
+    })
+}
+
 export{getRoom};
 export{getInfoUser};
 export{updateMDP};
+export{getSlang};

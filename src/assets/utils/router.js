@@ -19,7 +19,7 @@ const routes = [
       }
     },
     { path: "/register",component: Register},
-    { path: "/salle",component: Salle}
+    { path: "/salle/*",component: Salle}
   ]
   
 const router = new VueRouter({

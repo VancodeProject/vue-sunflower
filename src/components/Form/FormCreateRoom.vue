@@ -25,6 +25,7 @@
 
 <script>
 import CustomSelect from './SelectInput.vue'
+import {getSlang} from '../../assets/utils/backend'
 export default {
   data() {
     return {
@@ -41,11 +42,17 @@ export default {
   },
 
   methods:{
-    createRoom(){
+    async createRoom(){
       if(this.nameRoom.length<1 || this.nameRoom.length>64){
         this.errorForm=true;
       }else{
-        this.$router.push('salle');
+        const salle = await getSlang({
+          title: this.nameRoom, 
+          language: this.selected
+        })
+
+        if (salle)
+          this.$router.push(`salle/${salle.slang}`);
       }
     },
     changeInput(selected){

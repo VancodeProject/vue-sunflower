@@ -90,14 +90,7 @@ export default {
             colorsForZone:['#583d72','#9f5f80','#ffba93','#DB7F67','#A37B73'],
 
             // status p = participant | status admin = administrateur
-            listUser : [
-                {id:1,name:"Robin",status:"p"},
-                {id:2,name:"Thomas",status:"p"},
-                {id:3,name:"Pierre",status:"p"},
-                {id:4,name:"Vancode",status:"p"},
-                {id:5,name:"Hercule",status:"p"},
-                {id:6,name:"Jean",status:"p"},
-            ],
+            listUser : [],
 
             // On initialise le WebSocket a null
             ws: null,
@@ -126,6 +119,9 @@ export default {
 
         this.ws.onopen = () => {
             // TODO: Envoyer la requete WS pour recevoir l'etat actuel de la page
+            this.ws.send(JSON.stringify({
+                slang: "TEST",
+            }))
             setInterval(this.sendWSMessage, 100)
         }
 
@@ -133,7 +129,7 @@ export default {
             const data = JSON.parse(event.data);
             /*
                 STR = STaRt (les donnees de debut (si on arrive en cours de session))
-                TXT = TEXT
+                TXT = TeXT
                 ACZ = Add Code Zone (Ajout et Fusion)
                 DCZ = Delete Code Zone
                 UCZ = Update Code Zone (titre)
@@ -141,6 +137,7 @@ export default {
                 DUL = Delete User List
                 RAZ = Remove All Zone
                 ANU = Add New User
+                DEC = DEConnexion
             */
             switch (data.type) {
                 case "STR": {
@@ -150,7 +147,7 @@ export default {
                             position: zone.id,
                             title: zone.title,
                             content: zone.content,
-                            color: this.colorsForZone[parseInt(this.zone.id)%this.colorsForZone.length],
+                            color: this.colorsForZone[parseInt(zone.id)%this.colorsForZone.length],
                             userId: zone.users,
                             visible: true,
                         }
@@ -198,6 +195,20 @@ export default {
                 case "ANU":
                     this.addUser(data.user.name, data.first, false)
                     break;
+
+                case "DEC": {
+                    const deleteId = data.deleteId
+                    this.listUser.splice(
+                        this.listUser.lastIndexOf(
+                            this.listUser.find((el) => el.id === deleteId)
+                        )
+                    , 1)
+
+                    for (let i = 0; i < this.codeZones.length; i++)
+                        this.codeZones[i].userId = this.codeZones[i].userId.filter((id) => id !== deleteId)
+
+                    break;
+                }
             }
         };
 
@@ -261,11 +272,12 @@ export default {
         addCodeZone(event,content){
             if(content == null) content = [""];
 
+            const newId = this.findIdToCreate()
             const color = this.colorsForZone[this.codeZones.length%this.colorsForZone.length]
             const codeZone = {
-                id: this.findIdToCreate(),
+                id: newId,
                 position: Number(this.codeZones.length)+1, 
-                title : "titre " + newid,
+                title : "titre " + newId,
                 content: content, 
                 color: color, 
                 userId: [], 
@@ -448,6 +460,7 @@ export default {
             // directement dans le message de base afin de rendre le type de message plus clair
             this.queue.push(JSON.stringify({
                 type: eventType,
+                slang: "TEST",
                 ...message,
             }))
         },
